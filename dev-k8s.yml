@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: communicator-server-management-service
+  labels:
+    purpose: dev
+spec:
+  containers:
+  - name: communicator-server-management-service
+    image: communicator-server-management-service
+    ports:
+    - containerPort: 4001

@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { configService } from 'src/config/config.service';
 import { UsersService } from './users.service';
+
+const { rmqHost, rmqPassword, rmqPort, rmqQueue, rmqUser } =
+  configService.getRMQConfig();
 
 @Module({
   providers: [UsersService],
@@ -11,7 +15,7 @@ import { UsersService } from './users.service';
         name: 'USERS_SERVICE',
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://guest:guest@rabbitmq:5672/'],
+          urls: [`amqp://${rmqUser}:${rmqPassword}@${rmqHost}:${rmqPort}/`],
           queue: 'users_service_queue',
           queueOptions: {
             durable: false,

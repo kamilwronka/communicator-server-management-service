@@ -1,8 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transform } from 'class-transformer';
 import { Document } from 'mongoose';
 
+export type InvitationDocument = Invitation & Document;
 @Schema()
-export class Invitation extends Document {
+export class Invitation {
+  @Transform(({ value }) => value.toString(), { toPlainOnly: true })
+  _id: string;
+
   @Prop()
   user_id: string;
 

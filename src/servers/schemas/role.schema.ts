@@ -1,10 +1,16 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Transform } from 'class-transformer';
 import { Document } from 'mongoose';
 
 import { Permissions } from '../enums/permissions.enum';
 
+export type RoleDocument = Role & Document;
+
 @Schema()
-export class Role extends Document {
+export class Role {
+  @Transform(({ value }) => value.toString(), { toPlainOnly: true })
+  _id: string;
+
   @Prop()
   name: string;
 
