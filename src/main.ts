@@ -2,15 +2,18 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { AppModule } from './app.module';
-import { configService } from './servers/config/config.service';
+import { configService } from './config/config.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const { rmqHost, rmqPassword, rmqQueue, rmqPort, rmqUser } =
+    configService.getRMQConfig();
+
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://guest:guest@rabbitmq:5672/'],
-      queue: 'users_service_queue',
+      urls: [`amqp://${rmqUser}:${rmqPassword}@${rmqHost}:${rmqPort}/`],
+      queue: rmqQueue,
       queueOptions: {
         durable: false,
       },

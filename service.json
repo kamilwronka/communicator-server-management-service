@@ -35,9 +35,6 @@
       "ENV": {
         "value": "dev"
       },
-      "RUN_MIGRATIONS": {
-        "value": "true"
-      },
       "RABBITMQ_USER": {
         "source": "secrets"
       },
@@ -48,22 +45,12 @@
         "source": "secrets"
       },
       "RABBITMQ_PORT": {
-        "source": "secrets",
-        "key": "RABBITMQ_PORT"
-      },
-      "POSTGRES_PORT": {
         "source": "secrets"
       },
-      "POSTGRES_HOST": {
+      "MONGO_CONNECTION_URI": {
         "source": "secrets"
       },
-      "POSTGRES_USER": {
-        "source": "secrets"
-      },
-      "POSTGRES_PASSWORD": {
-        "source": "secrets"
-      },
-      "POSTGRES_DATABASE": {
+      "MONGO_DATABASE": {
         "source": "secrets"
       }
     },
