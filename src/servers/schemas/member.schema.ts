@@ -1,13 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type MemberDocument = Member & Document;
-@Schema()
+@Schema({ _id: false })
 export class Member {
-  @Transform(({ value }) => value.toString(), { toPlainOnly: true })
-  _id: string;
-
   @Prop()
   user_id: string;
 
@@ -17,8 +14,11 @@ export class Member {
   @Prop()
   profile_picture_url: string;
 
+  @Transform(({ value }) => value.map((role) => role.toString()), {
+    toPlainOnly: true,
+  })
   @Prop()
-  roles: string[];
+  roles: Types.ObjectId[];
 }
 
 export const ServerMemberSchema = SchemaFactory.createForClass(Member);

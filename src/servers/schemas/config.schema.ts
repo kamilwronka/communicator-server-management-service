@@ -6,7 +6,7 @@ export type ConfigDocument = Config & Document;
 @Schema()
 export class Config {
   @Transform(({ value }) => value.toString(), { toPlainOnly: true })
-  _id: string;
+  _id?: string;
 
   @Prop()
   server_image_url: string;
