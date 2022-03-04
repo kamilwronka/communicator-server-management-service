@@ -102,7 +102,7 @@ export class ServersService {
     const server = await (await this.serverModel.findById(serverId)).toJSON();
 
     const member = server.members.find((member) => {
-      return member.user_id.toString() === userId;
+      return member.user_id === userId;
     });
 
     const canViewServer = server.owner_id === userId || member;
