@@ -10,13 +10,13 @@ export type EventLogDocument = EventLog & Document;
 @Schema()
 export class EventLog {
   @Transform(({ value }) => value.toString(), { toPlainOnly: true })
-  _id: string;
+  _id?: string;
 
   @Prop()
-  type: EventLogType[];
+  type: EventLogType;
 
   @Prop()
-  destination: EventLogDestination[];
+  destination: EventLogDestination;
 
   @Prop()
   user_id: string;

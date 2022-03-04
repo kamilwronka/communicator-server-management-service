@@ -5,7 +5,6 @@ import { Ban, ServerBanSchema } from './ban.schema';
 import { Channel, ServerChannelSchema } from './channel.schema';
 import { Config, ServerConfigSchema } from './config.schema';
 import { EventLog, ServerEventLogSchema } from './eventLog.schema';
-import { Invitation, ServerInvitationSchema } from './invitation.schema';
 import { Member, ServerMemberSchema } from './member.schema';
 import { Role, ServerRoleSchema } from './role.schema';
 
@@ -14,7 +13,7 @@ export type ServerDocument = Server & Document;
 @Schema({ timestamps: true })
 export class Server {
   @Transform(({ value }) => value.toString(), { toPlainOnly: true })
-  _id: string;
+  _id?: string;
 
   @Prop()
   name: string;
@@ -43,11 +42,6 @@ export class Server {
   @Exclude()
   @Prop({ type: [ServerBanSchema], default: [] })
   bans: Ban[];
-
-  @Type(() => Invitation)
-  @Exclude()
-  @Prop({ type: [ServerInvitationSchema], default: [] })
-  invitations: Invitation[];
 
   @Type(() => Config)
   @Prop({ type: ServerConfigSchema })

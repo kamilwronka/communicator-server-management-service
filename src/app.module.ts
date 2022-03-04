@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { configService } from './config/config.service';
 import { ServersModule } from './servers/servers.module';
 import { UsersModule } from './users/users.module';
+import { InvitesModule } from './invites/invites.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module';
       },
     ),
     UsersModule,
+    InvitesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
