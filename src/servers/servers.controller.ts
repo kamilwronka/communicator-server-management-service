@@ -7,12 +7,14 @@ import {
   Post,
   UseInterceptors,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserId } from './decorators/user-id.decorator';
 import { CreateServerDto } from './dto/createServer.dto';
 import { JoinServerDto } from './dto/joinServer.dto';
 import { Server } from './schemas/server.schema';
 import { ServersService } from './servers.service';
 
+@ApiTags('servers')
 @Controller('servers')
 export class ServersController {
   constructor(private serversService: ServersService) {}

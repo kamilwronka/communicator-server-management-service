@@ -1,6 +1,7 @@
 {
   "app": "communicator",
   "name": "server-management-service",
+  "description": "Service for creating and managing servers.",
   "containerPort": "4000",
   "environments": [
     {
