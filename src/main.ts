@@ -34,7 +34,8 @@ async function bootstrap() {
     type: VersioningType.URI,
     defaultVersion: '1',
   });
-  app.setGlobalPrefix('api');
+
+  app.setGlobalPrefix(name);
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle(name)
