@@ -35,8 +35,6 @@ async function bootstrap() {
     defaultVersion: '1',
   });
 
-  app.setGlobalPrefix(name);
-
   const swaggerConfig = new DocumentBuilder()
     .setTitle(name)
     .setDescription(description)
