@@ -93,7 +93,11 @@ export class ServersService {
   }
 
   async findUserServers(userId: string): Promise<Server[]> {
-    const servers = await this.serverModel.find({ owner_id: userId });
+    const servers = await this.serverModel.find({
+      members: { $elemMatch: { user_id: userId } },
+    });
+
+    console.log(servers);
 
     return servers;
   }
@@ -146,7 +150,7 @@ export class ServersService {
     const user = await this.usersService.getUserData(userId);
 
     const server = await this.serverModel.findById(serverId);
-    const exists = server.members.find((member) => member.user_id === userId);
+    const exists = server?.members.find((member) => member.user_id === userId);
 
     if (exists) {
       throw new BadRequestException('User already joined this server.');
