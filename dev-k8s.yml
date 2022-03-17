@@ -1,12 +1,128 @@
+---
 apiVersion: v1
-kind: Pod
+kind: ServiceAccount
 metadata:
-  name: communicator-server-management-service
+  namespace: communicator-dev
+  name: server-management-service
+  labels:
+    account: server-management-service
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: communicator-dev
+  name: server-management-service
   labels:
     purpose: dev
+    app: server-management-service
 spec:
-  containers:
-  - name: communicator-server-management-service
-    image: communicator-server-management-service
-    ports:
-    - containerPort: 4001
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server-management-service
+
+  template:
+    metadata:
+      labels:
+        app: server-management-service
+
+    spec:
+      serviceAccountName: server-management-service
+      containers:
+        - name: server-management-service
+          image: server-management-service
+          ports:
+            - containerPort: 4000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: communicator-dev
+  name: server-management-service
+  labels:
+    app: server-management-service
+    service: server-management-service
+  annotations:
+    ingress.kubernetes.io/service-upstream: "true"
+spec:
+  ports:
+    - port: 4000
+      targetPort: 4000
+      protocol: TCP
+      name: http
+  selector:
+    app: server-management-service
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: server-management-service
+  namespace: communicator-dev
+  annotations:
+    konghq.com/plugins: communicator-dev-cors, key-auth
+    konghq.com/strip-path: "true"
+    konghq.com/preserve-host: "false"
+spec:
+  ingressClassName: kong
+  rules:
+    - http:
+        paths:
+          - path: /auth-hooks
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: server-management-service
+                port:
+                  number: 4000
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  namespace: communicator-dev
+  name: server-management-service
+spec:
+  hosts:
+    - server-management-service
+  http:
+    - route:
+        - destination:
+            host: server-management-service
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: connect-failure,refused-stream,503
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  namespace: communicator-dev
+  name: server-management-service
+spec:
+  host: server-management-service
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN
+# ---
+# apiVersion: security.istio.io/v1beta1
+# kind: AuthorizationPolicy
+# metadata:
+#   name: deny-path-from-outside
+#   namespace: communicator-dev
+# spec:
+#   selector:
+#     matchLabels:
+#       app: server-management-service
+#   action: DENY
+#   rules:
+#     - from:
+#         - source:
+#             notNamespaces: ["communicator-dev"]
+#             # notPrincipals:
+#             #   [
+#             #     "cluster.local/ns/communicator-dev/sa/server-management-service",
+#             #   ]
+#       to:
+#         - operation:
+#             paths: ["/users/create/account"]

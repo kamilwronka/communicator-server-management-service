@@ -1,9 +1,36 @@
+import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 import * as dotenv from 'dotenv';
 
+const client = new SecretManagerServiceClient();
 dotenv.config();
 
+export type TConfig = {
+  MONGO_CONNECTION_URI: string;
+  MONGO_DATABASE: string;
+};
 class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) {}
+  config: TConfig = {} as TConfig;
+
+  public async setup(keys: string[]) {
+    this.ensureValues(keys);
+    await this.retrieveSecrets();
+
+    return this;
+  }
+
+  public async retrieveSecrets() {
+    const secret = await client.accessSecretVersion({
+      name: 'projects/928190670092/secrets/communicator-dev-server-management-service/versions/1',
+    });
+    const data = JSON.parse(secret[0].payload.data.toString()) as TConfig;
+
+    this.config = data;
+  }
+
+  public getConfig() {
+    return this.config;
+  }
 
   private getValue(key: string, throwOnMissing = true): string {
     const value = this.env[key];
@@ -11,7 +38,7 @@ class ConfigService {
       throw new Error(`config error - missing env.${key}`);
     }
 
-    return value.trim();
+    return value;
   }
 
   public ensureValues(keys: string[]) {
@@ -28,32 +55,14 @@ class ConfigService {
     return env !== 'dev';
   }
 
-  public getRMQConfig() {
-    const rmqPort = this.getValue('RABBITMQ_PORT', false);
-    const rmqHost = this.getValue('RABBITMQ_HOST', false);
-    const rmqQueue = 'websocket_gateway_queue';
-    const rmqPassword = this.getValue('RABBITMQ_PASSWORD', false);
-    const rmqUser = this.getValue('RABBITMQ_USER', false);
-
-    return { rmqHost, rmqPort, rmqQueue, rmqUser, rmqPassword };
-  }
-
-  public getMongoConnectionUri() {
-    const connectionUri = this.getValue('MONGO_CONNECTION_URI', false);
-    const database = this.getValue('MONGO_DATABASE', false);
+  public getMongoConnectionConfig() {
+    const connectionUri = this.config.MONGO_CONNECTION_URI;
+    const database = this.config.MONGO_DATABASE;
 
     return { connectionUri, database };
   }
 }
 
-const configService = new ConfigService(process.env).ensureValues([
-  'RABBITMQ_HOST',
-  'RABBITMQ_PORT',
-  'RABBITMQ_USER',
-  'RABBITMQ_PASSWORD',
-  'PORT',
-  'MONGO_CONNECTION_URI',
-  'MONGO_DATABASE',
-]);
+const configService = new ConfigService(process.env);
 
 export { configService };

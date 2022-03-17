@@ -1,26 +1,30 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { configService } from './config/config.service';
 import { ServersModule } from './servers/servers.module';
 import { UsersModule } from './users/users.module';
 import { InvitesModule } from './invites/invites.module';
+import { HealthController } from './health/health.controller';
+import { TerminusModule } from '@nestjs/terminus';
 
 @Module({
   imports: [
     ServersModule,
-    MongooseModule.forRoot(
-      configService.getMongoConnectionUri().connectionUri,
-      {
-        dbName: configService.getMongoConnectionUri().database,
-        ssl: false,
+    MongooseModule.forRootAsync({
+      useFactory: () => {
+        const config = configService.getMongoConnectionConfig();
+
+        return {
+          uri: config.connectionUri,
+          ssl: true,
+          dbName: config.database,
+        };
       },
-    ),
+    }),
     UsersModule,
     InvitesModule,
+    TerminusModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [HealthController],
 })
 export class AppModule {}

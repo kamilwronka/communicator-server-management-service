@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-management-service
+spec:
+  selector:
+    matchLabels:
+      app: server-management-service
+  template:
+    metadata:
+      labels:
+        app: server-management-service
+    spec:
+      serviceAccountName: server-management-service
+      containers:
+        - name: server-management-service
+          image: communicator
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - name: container-port
+              containerPort: 4000
+          env:
+            - name: PORT
+              value: "4000"
+            - name: ENV
+              value: dev
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: container-port
+
+          readinessProbe:
+            tcpSocket:
+              port: container-port
+            initialDelaySeconds: 10
+            periodSeconds: 10

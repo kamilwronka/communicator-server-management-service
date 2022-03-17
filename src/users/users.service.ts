@@ -1,20 +1,25 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy, RmqRecordBuilder } from '@nestjs/microservices';
-import { map } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { catchError, map } from 'rxjs';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject('USERS_SERVICE') private client: ClientProxy) {}
+  constructor(private httpService: HttpService) {}
 
-  async getUserData(userId: string) {
-    const message = userId;
-    const record = new RmqRecordBuilder(message)
-      .setOptions({
-        priority: 1,
-        contentType: 'application/json',
-      })
-      .build();
+  async getUserData(userId: string): Promise<any> {
+    const response = this.httpService.get(
+      `http://users-service:4000/users/data/${userId}`,
+    );
 
-    return this.client.send({ cmd: 'me' }, record).toPromise();
+    const userData = await response.toPromise();
+
+    return userData.data;
+
+    // return response.pipe(
+    //   catchError((e) => {
+    //     throw new BadRequestException(e.response.data);
+    //   }),
+    //   map((res) => res.data),
+    // );
   }
 }
