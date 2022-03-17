@@ -18,7 +18,7 @@ spec:
     - host: api.communicator.kamilwronka.com
       http:
         paths:
-          - path: /auth-hooks
+          - path: /server-management-service
             pathType: ImplementationSpecific
             backend:
               service:
