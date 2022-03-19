@@ -61,7 +61,7 @@ metadata:
   name: server-management-service
   namespace: communicator-dev
   annotations:
-    konghq.com/plugins: communicator-dev-cors, key-auth
+    konghq.com/plugins: communicator-dev-cors, jwt
     konghq.com/strip-path: "true"
     konghq.com/preserve-host: "false"
 spec:
@@ -69,7 +69,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /auth-hooks
+          - path: /server-management-service
             pathType: ImplementationSpecific
             backend:
               service:

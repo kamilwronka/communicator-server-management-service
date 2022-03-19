@@ -3,8 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { configService } from './config/config.service';
-import { version } from '../package.json';
-import { description, name } from '../service.json';
 
 async function bootstrap() {
   await configService.setup(['ENV', 'PORT']);
@@ -18,10 +16,10 @@ async function bootstrap() {
   Logger.log(`Is production: ${isProduction}`);
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle(name)
-    .setDescription(description)
-    .setVersion(version)
-    .addTag(name)
+    // .setTitle(name)
+    // .setDescription(description)
+    // .setVersion(version)
+    // .addTag(name)
     .addBearerAuth()
     .build();
 
