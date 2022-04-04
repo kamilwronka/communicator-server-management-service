@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UsersService } from '@communicator/common';
 
 import { ServersService } from 'src/servers/servers.service';
-import { UsersService } from 'src/users/users.service';
 import { CreateInviteDto } from './dto/createInvite.dto';
 import { checkIfValid } from './helpers/checkIfValid';
 import { Invite, InviteDocument } from './schemas/invite.schema';

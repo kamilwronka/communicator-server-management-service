@@ -1,3 +1,4 @@
+import { UsersService } from '@communicator/common';
 import {
   BadRequestException,
   ForbiddenException,
@@ -8,7 +9,6 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { InvitesService } from 'src/invites/invites.service';
-import { UsersService } from 'src/users/users.service';
 import { CreateServerDto } from './dto/createServer.dto';
 import { ChannelType } from './enums/channelTypes.enum';
 import { EventLogDestination } from './enums/eventLogDestination.enum';

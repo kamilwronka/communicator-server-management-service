@@ -20,8 +20,13 @@ class ConfigService {
   }
 
   public async retrieveSecrets() {
+    const [versions] = await client.listSecretVersions({
+      parent:
+        'projects/928190670092/secrets/communicator-dev-server-management-service',
+    });
+
     const secret = await client.accessSecretVersion({
-      name: 'projects/928190670092/secrets/communicator-dev-server-management-service/versions/1',
+      name: versions[0].name,
     });
     const data = JSON.parse(secret[0].payload.data.toString()) as TConfig;
 
