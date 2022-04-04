@@ -15,7 +15,7 @@ COPY package.json package-lock.json .npmrc ./
 
 # authenticate with artifact registry
 RUN npm install -g google-artifactregistry-auth
-RUN echo ${GKE_SA_KEY} | base64 -d > /usr/src/app/cretendials.json
+RUN echo ${GKE_SA_KEY} | base64 -d > credentials.json
 RUN npm run artifactregistry-login
 
 # install force resolutions package
