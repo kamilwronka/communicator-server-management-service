@@ -5,6 +5,8 @@ import { ServersModule } from './servers/servers.module';
 import { InvitesModule } from './invites/invites.module';
 import { HealthController } from './health/health.controller';
 import { TerminusModule } from '@nestjs/terminus';
+import { ChannelsModule } from './channels/channels.module';
+import { MembersModule } from './members/members.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { TerminusModule } from '@nestjs/terminus';
     }),
     InvitesModule,
     TerminusModule,
+    ChannelsModule,
+    MembersModule,
   ],
   controllers: [HealthController],
 })

@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class JoinServerDto {
+export class AddMemberDto {
   @IsNotEmpty()
   @IsString()
   inviteId: string;

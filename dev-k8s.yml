@@ -69,7 +69,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /server-management-service
+          - path: /servers
             pathType: ImplementationSpecific
             backend:
               service:
