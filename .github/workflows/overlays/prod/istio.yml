@@ -1,14 +1,14 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: server-management-service
+  name: servers
 spec:
   hosts:
-    - server-management-service
+    - servers
   http:
     - route:
         - destination:
-            host: server-management-service
+            host: servers
       retries:
         attempts: 3
         perTryTimeout: 2s
@@ -17,9 +17,9 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: server-management-service
+  name: servers
 spec:
-  host: server-management-service
+  host: servers
   trafficPolicy:
     loadBalancer:
       simple: ROUND_ROBIN
@@ -31,7 +31,7 @@ spec:
 # spec:
 #   selector:
 #     matchLabels:
-#       app: server-management-service
+#       app: servers
 #   action: DENY
 #   rules:
 #     - from:

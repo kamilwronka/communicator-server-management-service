@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: server-management-service
+  name: servers
 spec:
   selector:
     matchLabels:
-      app: server-management-service
+      app: servers
   template:
     metadata:
       labels:
-        app: server-management-service
+        app: servers
     spec:
-      serviceAccountName: server-management-service
+      serviceAccountName: servers
       containers:
-        - name: server-management-service
+        - name: servers
           image: communicator
           resources:
             requests:

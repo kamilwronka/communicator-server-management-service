@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: server-management-service
+  name: servers
   labels:
-    app: server-management-service
-    service: server-management-service
+    app: servers
+    service: servers
   annotations:
     ingress.kubernetes.io/service-upstream: "true"
 spec:
@@ -14,11 +14,11 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: server-management-service
+    app: servers
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: server-management-service
+  name: servers
   labels:
-    account: server-management-service
+    account: servers

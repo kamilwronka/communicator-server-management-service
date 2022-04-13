@@ -1,12 +1,12 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: server-management-service-hpa
+  name: servers-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: server-management-service
+    name: servers
   minReplicas: 1
   maxReplicas: 5
   metrics:
