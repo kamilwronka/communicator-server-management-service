@@ -16,15 +16,15 @@ async function bootstrap() {
   Logger.log(`Is production: ${isProduction}`);
 
   const swaggerConfig = new DocumentBuilder()
-    // .setTitle(name)
-    // .setDescription(description)
-    // .setVersion(version)
-    // .addTag(name)
+    .setTitle('Servers')
+    .setDescription('Servers')
+    .setVersion('0.0.1')
+    .addTag('servers')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(port);
