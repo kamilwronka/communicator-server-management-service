@@ -1,6 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UsersModule } from '@communicator/common';
 
 import { InvitesModule } from 'src/invites/invites.module';
 import { Server, ServerSchema } from './schemas/server.schema';
@@ -11,7 +10,6 @@ import { ServersService } from './servers.service';
   imports: [
     MongooseModule.forFeature([{ name: Server.name, schema: ServerSchema }]),
     forwardRef(() => InvitesModule),
-    UsersModule,
   ],
   controllers: [ServersController],
   providers: [ServersService],

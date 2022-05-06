@@ -1,6 +1,4 @@
-import { UsersService } from '@communicator/common';
 import {
-  BadRequestException,
   ForbiddenException,
   forwardRef,
   Inject,
@@ -9,13 +7,13 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { InvitesService } from 'src/invites/invites.service';
+import { getUserData } from 'src/services/users/users.service';
 import { CreateServerDto } from './dto/createServer.dto';
 import { ChannelType } from './enums/channelTypes.enum';
 import { EventLogDestination } from './enums/eventLogDestination.enum';
 import { EventLogType } from './enums/eventLogType.enum';
 import { Permissions } from './enums/permissions.enum';
 import { Channel } from './schemas/channel.schema';
-import { Member } from './schemas/member.schema';
 import { Role } from './schemas/role.schema';
 
 import { Server, ServerDocument } from './schemas/server.schema';
@@ -24,14 +22,13 @@ import { Server, ServerDocument } from './schemas/server.schema';
 export class ServersService {
   constructor(
     @InjectModel(Server.name) private serverModel: Model<ServerDocument>,
-    private usersService: UsersService,
     @Inject(forwardRef(() => InvitesService))
     private inviteService: InvitesService,
   ) {}
 
   async createServer(userId: string, server: CreateServerDto) {
     // get user data
-    const response = await this.usersService.getUserData(userId);
+    const response = await getUserData(userId);
 
     // create new server
     const ownerRoleId = new Types.ObjectId();

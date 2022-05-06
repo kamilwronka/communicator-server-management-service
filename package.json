@@ -26,8 +26,7 @@
     "minimist": "^1.2.6"
   },
   "dependencies": {
-    "@communicator/common": "1.0.3",
-    "@google-cloud/secret-manager": "^3.11.0",
+    "@communicator/common": "1.0.4",
     "@nestjs/axios": "^0.0.7",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",

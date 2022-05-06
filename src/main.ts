@@ -9,11 +9,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   const port = configService.getPort();
-  const isProduction = configService.isProduction();
 
-  Logger.log('Starting application using following config:');
-  Logger.log(`Port: ${port}`);
-  Logger.log(`Is production: ${isProduction}`);
+  Logger.log(`Starting application on port: ${port}`);
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Servers')

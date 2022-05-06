@@ -1,4 +1,3 @@
-import { UsersService } from '@communicator/common';
 import {
   BadRequestException,
   forwardRef,
@@ -11,12 +10,12 @@ import { InvitesService } from 'src/invites/invites.service';
 
 import { Member } from 'src/servers/schemas/member.schema';
 import { Server, ServerDocument } from 'src/servers/schemas/server.schema';
+import { getUserData } from 'src/services/users/users.service';
 
 @Injectable()
 export class MembersService {
   constructor(
     @InjectModel(Server.name) private serverModel: Model<ServerDocument>,
-    private usersService: UsersService,
     @Inject(forwardRef(() => InvitesService))
     private inviteService: InvitesService,
   ) {}
@@ -24,7 +23,7 @@ export class MembersService {
   async addMember(userId: string, serverId: string, inviteId: string) {
     // check if invite is valid
     await this.inviteService.getInvite(inviteId);
-    const user = await this.usersService.getUserData(userId);
+    const user = await getUserData(userId);
 
     const server = await this.serverModel.findById(serverId);
     const exists = server?.members.find((member) => member.user_id === userId);

@@ -1,7 +1,6 @@
-import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
+import { retrieveSecret } from '@communicator/common';
 import * as dotenv from 'dotenv';
 
-const client = new SecretManagerServiceClient();
 dotenv.config();
 
 export type TConfig = {
@@ -20,15 +19,9 @@ class ConfigService {
   }
 
   public async retrieveSecrets() {
-    const [versions] = await client.listSecretVersions({
-      parent:
-        'projects/928190670092/secrets/communicator-dev-server-management-service',
-    });
-
-    const secret = await client.accessSecretVersion({
-      name: versions[0].name,
-    });
-    const data = JSON.parse(secret[0].payload.data.toString()) as TConfig;
+    const data = await retrieveSecret<TConfig>(
+      'projects/464228375192/secrets/communicator-dev-servers',
+    );
 
     this.config = data;
   }
