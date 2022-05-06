@@ -15,7 +15,7 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Servers')
     .setDescription('Servers')
-    .setVersion('0.0.1')
+    .setVersion('0.0.2')
     .addTag('servers')
     .addBearerAuth()
     .build();
