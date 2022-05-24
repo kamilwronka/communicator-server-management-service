@@ -3,17 +3,16 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { InvitesService } from 'src/invites/invites.service';
 import { getUserData } from 'src/services/users/users.service';
 import { CreateServerDto } from './dto/createServer.dto';
-import { ChannelType } from './enums/channelTypes.enum';
 import { EventLogDestination } from './enums/eventLogDestination.enum';
 import { EventLogType } from './enums/eventLogType.enum';
 import { Permissions } from './enums/permissions.enum';
-import { Channel } from './schemas/channel.schema';
 import { Role } from './schemas/role.schema';
 
 import { Server, ServerDocument } from './schemas/server.schema';
@@ -41,18 +40,6 @@ export class ServersService {
         _id: ownerRoleId,
       },
     ];
-    const defaultChannels: Channel[] = [
-      {
-        name: 'default text channel',
-        type: ChannelType.TEXT,
-        allowed_roles: [],
-      },
-      {
-        name: 'default voice channel',
-        type: ChannelType.VOICE,
-        allowed_roles: [],
-      },
-    ];
 
     const serverData: Partial<Server> = {
       owner_id: userId,
@@ -77,7 +64,6 @@ export class ServersService {
           roles: [ownerRoleId],
         },
       ],
-      channels: defaultChannels,
       roles: defaultRoles,
     };
 
@@ -94,13 +80,11 @@ export class ServersService {
       members: { $elemMatch: { user_id: userId } },
     });
 
-    console.log(servers);
-
     return servers;
   }
 
   async getServerDetails(userId: string, serverId: string): Promise<Server> {
-    const server = await (await this.serverModel.findById(serverId)).toJSON();
+    const server = await this.getServerById(serverId);
 
     const member = server.members.find((member) => {
       return member.user_id === userId;
@@ -113,37 +97,22 @@ export class ServersService {
       throw new ForbiddenException();
     }
 
-    // filter channels that user has no acces to
-    const userRoles = member.roles;
-    const allowedChannels = server.channels.filter((channel) => {
-      const allowedRoles = channel.allowed_roles;
-
-      if (allowedRoles.length === 0) {
-        return true;
-      }
-
-      const canViewChannel = allowedRoles.find((role) => {
-        return userRoles
-          .map((userRole) => userRole.toString())
-          .includes(role.toString());
-      });
-
-      return canViewChannel;
-    });
-
-    // xd
-
-    const filteredData = {
-      ...server,
-      channels: allowedChannels,
-    };
-
-    return new Server(filteredData);
+    return new Server({ ...server });
   }
 
   async getServerById(serverId: string): Promise<Server> {
-    const server = await (await this.serverModel.findById(serverId)).toJSON();
+    let server;
 
-    return server;
+    try {
+      server = await this.serverModel.findById(serverId);
+
+      if (!server) {
+        throw new NotFoundException();
+      }
+    } catch (error) {
+      throw error;
+    }
+
+    return server.toJSON();
   }
 }

@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import { Document } from 'mongoose';
 import { Ban, ServerBanSchema } from './ban.schema';
-import { Channel, ServerChannelSchema } from './channel.schema';
 import { Config, ServerConfigSchema } from './config.schema';
 import { EventLog, ServerEventLogSchema } from './eventLog.schema';
 import { Member, ServerMemberSchema } from './member.schema';
@@ -20,10 +19,6 @@ export class Server {
 
   @Prop()
   owner_id: string;
-
-  @Type(() => Channel)
-  @Prop({ type: [ServerChannelSchema], default: [] })
-  channels: Channel[];
 
   @Type(() => Role)
   @Prop({ type: [ServerRoleSchema], default: [] })
