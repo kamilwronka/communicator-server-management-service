@@ -27,7 +27,7 @@ export class ChannelsService {
 
   async getPrivateChannels(userId: string) {
     const channels = await this.channelModel.find({
-      'users.user_id': '62841d8ff45b92007049ebe9',
+      'users.user_id': userId,
     });
 
     return channels;
