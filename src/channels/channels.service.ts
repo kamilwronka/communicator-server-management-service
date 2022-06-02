@@ -33,6 +33,12 @@ export class ChannelsService {
     return channels;
   }
 
+  async getServerChannels(serverId: string) {
+    const channels = await this.channelModel.find({ server_id: serverId });
+
+    return channels;
+  }
+
   async getMatchingChannels(users: User[]) {
     const channels = await this.channelModel.find({ users });
 

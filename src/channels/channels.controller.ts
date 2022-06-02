@@ -18,8 +18,8 @@ export class ChannelsController {
   }
 
   @Get(':serverId/channels')
-  async getServerChannels() {
-    return 'dupa';
+  async getServerChannels(@Param('serverId') serverId: string) {
+    return this.channelsService.getServerChannels(serverId);
   }
 
   @Post(':serverId/channels')
