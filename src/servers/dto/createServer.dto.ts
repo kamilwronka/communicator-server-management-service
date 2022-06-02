@@ -1,11 +1,12 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBase64, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateServerDto {
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  server_image_url: string;
+  @IsBase64()
+  image_file: string;
 }

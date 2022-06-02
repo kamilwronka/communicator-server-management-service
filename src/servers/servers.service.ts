@@ -7,7 +7,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { nanoid } from 'nanoid';
+
 import { InvitesService } from 'src/invites/invites.service';
+import { uploadAvatar } from 'src/services/media/media.service';
 import { getUserData } from 'src/services/users/users.service';
 import { CreateServerDto } from './dto/createServer.dto';
 import { EventLogDestination } from './enums/eventLogDestination.enum';
@@ -41,11 +44,24 @@ export class ServersService {
       },
     ];
 
+    let serverImageUrl = '';
+
+    if (server.image_file) {
+      const imageId = nanoid();
+
+      const serverImage = await uploadAvatar(
+        `avatars/${userId}/${imageId}.png`,
+        server.image_file,
+      );
+
+      serverImageUrl = serverImage.file_url;
+    }
+
     const serverData: Partial<Server> = {
       owner_id: userId,
       name: server.name,
       config: {
-        server_image_url: server.server_image_url,
+        server_image_url: serverImageUrl ? serverImageUrl : null,
       },
       event_log: [
         {
