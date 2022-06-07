@@ -10,12 +10,15 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { AccessToken } from 'livekit-server-sdk';
 import { ServersService } from 'src/servers/servers.service';
 
 import { CreateChannelDto, User } from './dto/create-channel.dto';
 import { ChannelType } from './enums/channelTypes.enum';
 import { PermissionType } from './enums/permission-type.enum';
 import { Channel, ChannelDocument } from './schemas/channel.schema';
+import { getUserData } from 'src/services/users/users.service';
+import { configService } from 'src/config/config.service';
 
 @Injectable()
 export class ChannelsService {
@@ -163,5 +166,25 @@ export class ChannelsService {
     }
 
     return channel.toJSON();
+  }
+
+  async getRTCToken(userId: string, serverId: string, channelId: string) {
+    const user = await getUserData(userId);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    const { livekitApiKey, livekitApiSecret } =
+      configService.getLivekitConfig();
+    const roomName = channelId;
+    const participantName = user.username;
+
+    const accessToken = new AccessToken(livekitApiKey, livekitApiSecret, {
+      identity: participantName,
+    });
+    accessToken.addGrant({ roomJoin: true, room: roomName });
+
+    return accessToken.toJwt();
   }
 }

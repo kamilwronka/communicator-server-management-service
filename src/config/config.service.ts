@@ -6,6 +6,8 @@ dotenv.config();
 export type TConfig = {
   MONGO_CONNECTION_URI: string;
   MONGO_DATABASE: string;
+  LIVEKIT_API_KEY: string;
+  LIVEKIT_API_SECRET: string;
 };
 class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) {}
@@ -69,6 +71,13 @@ class ConfigService {
     const database = this.config.MONGO_DATABASE;
 
     return { connectionUri, database };
+  }
+
+  public getLivekitConfig() {
+    const livekitApiKey = this.config.LIVEKIT_API_KEY;
+    const livekitApiSecret = this.config.LIVEKIT_API_SECRET;
+
+    return { livekitApiKey, livekitApiSecret };
   }
 }
 

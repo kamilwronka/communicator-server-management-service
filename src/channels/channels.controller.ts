@@ -35,4 +35,13 @@ export class ChannelsController {
       serverId,
     );
   }
+
+  @Get(':serverId/channels/:channelId/token')
+  async getRTCToken(
+    @UserId() userId: string,
+    @Param('serverId') serverId: string,
+    @Param('channelId') channelId: string,
+  ) {
+    return this.channelsService.getRTCToken(userId, serverId, channelId);
+  }
 }
