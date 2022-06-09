@@ -19,6 +19,7 @@ import { PermissionType } from './enums/permission-type.enum';
 import { Channel, ChannelDocument } from './schemas/channel.schema';
 import { getUserData } from 'src/services/users/users.service';
 import { configService } from 'src/config/config.service';
+import { UpdateLastMessageDateDto } from './dto/update-last-message-date.dto';
 
 @Injectable()
 export class ChannelsService {
@@ -29,9 +30,11 @@ export class ChannelsService {
   ) {}
 
   async getPrivateChannels(userId: string) {
-    const channels = await this.channelModel.find({
-      'users.user_id': userId,
-    });
+    const channels = await this.channelModel
+      .find({
+        'users.user_id': userId,
+      })
+      .sort({ last_message_date: -1 });
 
     return channels;
   }
@@ -86,6 +89,7 @@ export class ChannelsService {
         type,
         server_id: null,
         users,
+        last_message_date: new Date().toISOString(),
       };
     }
 
@@ -186,5 +190,23 @@ export class ChannelsService {
     accessToken.addGrant({ roomJoin: true, room: roomName });
 
     return accessToken.toJwt();
+  }
+
+  async updateLastMessageDate(
+    channelId: string,
+    data: UpdateLastMessageDateDto,
+  ) {
+    const response = await this.channelModel.updateOne(
+      {
+        _id: channelId,
+        last_message_date: { $lt: data.date },
+      },
+      {
+        $set: { last_message_date: data.date },
+      },
+      { new: true },
+    );
+
+    return response;
   }
 }

@@ -1,7 +1,9 @@
 import { UserId } from '@communicator/common';
+import { Patch } from '@nestjs/common';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
-import { CreateChannelDto } from './dto/create-channel.dto';
+import { CreateChannelDto, User } from './dto/create-channel.dto';
+import { UpdateLastMessageDateDto } from './dto/update-last-message-date.dto';
 
 @Controller('')
 export class ChannelsController {
@@ -15,6 +17,14 @@ export class ChannelsController {
   @Post('private/channels')
   async createPrivateChannel(@Body() createChannelData: CreateChannelDto) {
     return this.channelsService.createChannel(createChannelData);
+  }
+
+  @Patch('private/channels/:channelId')
+  async updateLastMessageDate(
+    @Param('channelId') channelId: string,
+    @Body() data: UpdateLastMessageDateDto,
+  ) {
+    return this.channelsService.updateLastMessageDate(channelId, data);
   }
 
   @Get(':serverId/channels')

@@ -39,6 +39,9 @@ export class Channel {
   @Type(() => PermissionOverwrite)
   @Prop({ type: [PermissionOverwriteSchema], default: [] })
   permissions_overwrites?: PermissionOverwrite[];
+
+  @Prop()
+  last_message_date?: string;
 }
 
 export const ChannelSchema = SchemaFactory.createForClass(Channel);
