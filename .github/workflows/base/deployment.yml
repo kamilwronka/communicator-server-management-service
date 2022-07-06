@@ -11,6 +11,8 @@ spec:
       labels:
         app: servers
     spec:
+      imagePullSecrets:
+        - name: docker-registry
       serviceAccountName: servers
       containers:
         - name: servers
