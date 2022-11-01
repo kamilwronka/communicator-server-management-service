@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import { Document } from 'mongoose';
 import { Ban, ServerBanSchema } from './ban.schema';
-import { Config, ServerConfigSchema } from './config.schema';
 import { EventLog, ServerEventLogSchema } from './eventLog.schema';
 import { Member, ServerMemberSchema } from './member.schema';
 import { Role, ServerRoleSchema } from './role.schema';
@@ -16,6 +15,9 @@ export class Server {
 
   @Prop()
   name: string;
+
+  @Prop({ default: null })
+  icon: string | null;
 
   @Prop()
   owner_id: string;
@@ -37,10 +39,6 @@ export class Server {
   @Exclude()
   @Prop({ type: [ServerBanSchema], default: [] })
   bans: Ban[];
-
-  @Type(() => Config)
-  @Prop({ type: ServerConfigSchema })
-  config: Config;
 
   constructor(partial: Partial<Server>) {
     Object.assign(this, partial);

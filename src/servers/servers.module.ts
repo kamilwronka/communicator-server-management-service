@@ -11,6 +11,8 @@ import { ServersManagementService } from './servers-management.service';
 import { ServersManagementController } from './servers-management.controller';
 import { ConfigService } from '@nestjs/config';
 import { ICloudflareConfig } from 'src/config/types';
+import { RolesService } from './roles.service';
+import { RolesController } from './roles.controller';
 
 @Module({
   imports: [
@@ -18,7 +20,11 @@ import { ICloudflareConfig } from 'src/config/types';
     forwardRef(() => InvitesModule),
     UsersModule,
   ],
-  controllers: [ServersController, ServersManagementController],
+  controllers: [
+    ServersController,
+    ServersManagementController,
+    RolesController,
+  ],
   providers: [
     ServersService,
     ServersManagementService,
@@ -39,6 +45,7 @@ import { ICloudflareConfig } from 'src/config/types';
         });
       },
     },
+    RolesService,
   ],
   exports: [ServersService],
 })

@@ -2,25 +2,29 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { Document, Types } from 'mongoose';
 
-import { Permissions } from '../enums/permissions.enum';
+import { EPermissions } from '../enums/permissions.enum';
 
 export type RoleDocument = Role & Document;
 
 @Schema()
 export class Role {
+  constructor(partial: Partial<Role>) {
+    Object.assign(this, partial);
+  }
+
   @Transform(({ value }) => value.toString(), { toPlainOnly: true })
   _id?: Types.ObjectId;
 
   @Prop()
   name: string;
 
-  @Prop()
-  permissions: Permissions[];
+  @Prop({ default: [] })
+  permissions: EPermissions[];
 
-  @Prop()
+  @Prop({ default: null })
   color: string;
 
-  @Prop()
+  @Prop({ default: 0 })
   importance: number;
 }
 

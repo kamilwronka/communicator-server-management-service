@@ -30,7 +30,12 @@ export class ServersController {
     @UserId() userId: string,
     @Param('serverId') serverId: string,
   ): Promise<Server> {
-    return this.serversService.getServer(userId, serverId);
+    const serverDocument = await this.serversService.getServer(
+      userId,
+      serverId,
+    );
+
+    return new Server(serverDocument.toJSON());
   }
 
   @Post('')

@@ -13,8 +13,8 @@ export class Server {
   @Prop()
   name: string;
 
-  @Prop()
-  server_image_url?: string;
+  @Prop({ default: null })
+  icon: string | null;
 }
 
 @Schema({ _id: false })

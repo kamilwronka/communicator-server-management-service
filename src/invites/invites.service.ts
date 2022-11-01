@@ -58,7 +58,7 @@ export class InvitesService {
       server: {
         id: server._id,
         name: server.name,
-        server_image_url: server.config.server_image_url,
+        icon: server.icon,
       },
     };
 

@@ -13,7 +13,7 @@ import { UsersService } from 'src/users/users.service';
 import { CreateServerDto } from './dto/createServer.dto';
 import { EventLogDestination } from './enums/eventLogDestination.enum';
 import { EventLogType } from './enums/eventLogType.enum';
-import { Permissions } from './enums/permissions.enum';
+import { EPermissions } from './enums/permissions.enum';
 import { Role } from './schemas/role.schema';
 
 import { Server, ServerDocument } from './schemas/server.schema';
@@ -27,7 +27,7 @@ export class ServersService {
     private readonly usersService: UsersService,
   ) {}
 
-  async findServerById(serverId: string): Promise<Server> {
+  async findServerById(serverId: string): Promise<ServerDocument> {
     const server = await this.serverModel.findById(serverId);
 
     if (!server) {
@@ -45,7 +45,7 @@ export class ServersService {
     return servers;
   }
 
-  async getServer(userId: string, serverId: string): Promise<Server> {
+  async getServer(userId: string, serverId: string): Promise<ServerDocument> {
     const server = await this.findServerById(serverId);
 
     const member = server.members.find((member) => {
@@ -71,7 +71,7 @@ export class ServersService {
     const defaultRoles: Role[] = [
       {
         name: 'owner',
-        permissions: [Permissions.SHOW_CHANNELS, Permissions.MANAGE_CHANNELS],
+        permissions: [EPermissions.SHOW_CHANNELS, EPermissions.MANAGE_CHANNELS],
         color: 'red',
         importance: 1,
         _id: ownerRoleId,
@@ -81,6 +81,7 @@ export class ServersService {
     const serverData: Partial<Server> = {
       owner_id: userId,
       name: server.name,
+      icon: null,
       event_log: [
         {
           destination: EventLogDestination.SERVER,
