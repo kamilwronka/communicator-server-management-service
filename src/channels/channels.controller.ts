@@ -1,13 +1,18 @@
-import { UserId } from '@communicator/common';
 import { Patch } from '@nestjs/common';
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { UserId } from 'src/decorators/userId.decorator';
 import { ChannelsService } from './channels.service';
-import { CreateChannelDto, User } from './dto/create-channel.dto';
+import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateLastMessageDateDto } from './dto/update-last-message-date.dto';
 
 @Controller('')
 export class ChannelsController {
   constructor(private channelsService: ChannelsService) {}
+
+  // @Get('channels/:channelId')
+  // async getChannelById(@Param() channelId: string) {
+  //   return this.channelsService.getChannelById(channelId);
+  // }
 
   @Get('private/channels')
   async getPrivateChannels(@UserId() userId: string) {

@@ -8,7 +8,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UserId } from '@communicator/common';
+import { UserId } from 'src/decorators/userId.decorator';
 import { CreateServerDto } from './dto/createServer.dto';
 import { Server } from './schemas/server.schema';
 import { ServersService } from './servers.service';
@@ -21,7 +21,7 @@ export class ServersController {
   // @UseInterceptors(ClassSerializerInterceptor)
   @Get('')
   async getServers(@UserId() userId: string): Promise<Server[]> {
-    return this.serversService.findUserServers(userId);
+    return this.serversService.findServersByUserId(userId);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)
@@ -30,7 +30,7 @@ export class ServersController {
     @UserId() userId: string,
     @Param('serverId') serverId: string,
   ): Promise<Server> {
-    return this.serversService.getServerDetails(userId, serverId);
+    return this.serversService.getServer(userId, serverId);
   }
 
   @Post('')

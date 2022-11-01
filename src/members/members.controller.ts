@@ -1,5 +1,5 @@
-import { UserId } from '@communicator/common';
 import { Body, Controller, Param, Post } from '@nestjs/common';
+import { UserId } from 'src/decorators/userId.decorator';
 import { AddMemberDto } from './dto/addMember.dto';
 import { MembersService } from './members.service';
 

@@ -17,9 +17,10 @@ import { CreateChannelDto, User } from './dto/create-channel.dto';
 import { ChannelType } from './enums/channelTypes.enum';
 import { PermissionType } from './enums/permission-type.enum';
 import { Channel, ChannelDocument } from './schemas/channel.schema';
-import { getUserData } from 'src/services/users/users.service';
-import { configService } from 'src/config/config.service';
 import { UpdateLastMessageDateDto } from './dto/update-last-message-date.dto';
+import { ConfigService } from '@nestjs/config';
+import { ILivekitConfig } from 'src/config/types';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ChannelsService {
@@ -27,6 +28,8 @@ export class ChannelsService {
     @InjectModel(Channel.name) private channelModel: Model<ChannelDocument>,
     @Inject(forwardRef(() => ServersService))
     private serversService: ServersService,
+    private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
   ) {}
 
   async getPrivateChannels(userId: string) {
@@ -94,7 +97,7 @@ export class ChannelsService {
     }
 
     if (serverId && type !== ChannelType.PRIVATE) {
-      const server = await this.serversService.getServerById(serverId);
+      const server = await this.serversService.getServer(userId, serverId);
 
       const canCreate = server.owner_id === userId;
 
@@ -173,18 +176,18 @@ export class ChannelsService {
   }
 
   async getRTCToken(userId: string, serverId: string, channelId: string) {
-    const user = await getUserData(userId);
+    const user = await this.usersService.getUserById(userId);
 
     if (!user) {
       throw new NotFoundException();
     }
 
-    const { livekitApiKey, livekitApiSecret } =
-      configService.getLivekitConfig();
+    const { apiKey, secret } =
+      this.configService.get<ILivekitConfig>('livekit');
     const roomName = channelId;
     const participantName = user.username;
 
-    const accessToken = new AccessToken(livekitApiKey, livekitApiSecret, {
+    const accessToken = new AccessToken(apiKey, secret, {
       identity: participantName,
     });
     accessToken.addGrant({ roomJoin: true, room: roomName });

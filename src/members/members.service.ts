@@ -10,7 +10,7 @@ import { InvitesService } from 'src/invites/invites.service';
 
 import { Member } from 'src/servers/schemas/member.schema';
 import { Server, ServerDocument } from 'src/servers/schemas/server.schema';
-import { getUserData } from 'src/services/users/users.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class MembersService {
@@ -18,12 +18,13 @@ export class MembersService {
     @InjectModel(Server.name) private serverModel: Model<ServerDocument>,
     @Inject(forwardRef(() => InvitesService))
     private inviteService: InvitesService,
+    private readonly usersService: UsersService,
   ) {}
 
   async addMember(userId: string, serverId: string, inviteId: string) {
     // check if invite is valid
     await this.inviteService.getInvite(inviteId);
-    const user = await getUserData(userId);
+    const user = await this.usersService.getUserById(userId);
 
     const server = await this.serverModel.findById(serverId);
     const exists = server?.members.find((member) => member.user_id === userId);

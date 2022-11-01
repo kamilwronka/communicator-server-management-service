@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { ServersService } from 'src/servers/servers.service';
-import { getUserData } from 'src/services/users/users.service';
+import { UsersService } from 'src/users/users.service';
 import { CreateInviteDto } from './dto/createInvite.dto';
 import { checkIfValid } from './helpers/checkIfValid';
 import { Invite, InviteDocument } from './schemas/invite.schema';
@@ -21,11 +21,12 @@ export class InvitesService {
     private serversService: ServersService,
     @InjectModel(Invite.name)
     private inviteModel: Model<InviteDocument>,
+    private readonly usersService: UsersService,
   ) {}
 
   async createInvite(userId: string, serverId: string, body: CreateInviteDto) {
     const { max_age, max_uses, validate } = body;
-    const server = await this.serversService.getServerDetails(userId, serverId);
+    const server = await this.serversService.getServer(userId, serverId);
 
     if (validate) {
       let existingInvite;
@@ -43,7 +44,7 @@ export class InvitesService {
       }
     }
 
-    const user = await getUserData(userId);
+    const user = await this.usersService.getUserById(userId);
     const { user_id, profile_picture_url, username } = user;
 
     const invitationData: Invite = {
@@ -92,7 +93,7 @@ export class InvitesService {
   async getServerInvites(userId: string, serverId: string) {
     // TODO - add role checking
 
-    const server = await this.serversService.getServerDetails(userId, serverId);
+    const server = await this.serversService.getServer(userId, serverId);
 
     const invites = await this.inviteModel.find({
       'server.id': server._id.toString(),

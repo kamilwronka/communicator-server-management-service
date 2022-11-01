@@ -1,60 +1,49 @@
 {
-    "name": "server name",
-    "id": "server id",
-    "owner_id": "owner id",
-    "channels": [
-        {
-            "id": "channel id",
-            "name": "channel name",
-            "allowed_roles": ["role id"],
-            "type": "text/voice"
-        }
-    ],
-    "roles": [
-        {
-            "id": "role id",
-            "name": "role name",
-            "permissions": [
-                "show_channels",
-                "manage_channels"
-            ],
-            "color": "role color",
-            "importance": 1
-        }
-    ],
-    "members": [
-        {
-            "user_id": "user id",
-            "username": "username",
-            "profile_picture_url": "user image url",
-            "roles": ["role id"]
-        }
-    ],
-    "event_log": [
-        {
-            "id": "event id",
-            "type": "creation/modification/deletion",
-            "destination": "channel/server/role",
-            "user_id": "user id",
-            "username": "username",
-            "profile_picture_url": "user image url"
-        }
-    ],
-    "bans": [
-        {
-            "user_id": "banned user id",
-            "profile_picture_url": "banned user image url",
-            "username": "username"
-        }
-    ],
-    "invitations": [
-        {
-            "user_id": "banned user id",
-            "profile_picture_url": "banned user image url",
-            "username": "username"
-        }
-    ],
-    "config": {
-        "server_image_url": "image url"
+  "name": "server name",
+  "id": "server id",
+  "owner_id": "owner id",
+  "roles": [
+    {
+      "id": "role id",
+      "name": "role name",
+      "permissions": ["show_channels", "manage_channels"],
+      "color": "role color",
+      "importance": 1
     }
+  ],
+  "members": [
+    {
+      "user_id": "user id",
+      "username": "username",
+      "profile_picture_url": "user image url",
+      "roles": ["role id"]
+    }
+  ],
+  "event_log": [
+    {
+      "id": "event id",
+      "type": "creation/modification/deletion",
+      "destination": "channel/server/role",
+      "user_id": "user id",
+      "username": "username",
+      "profile_picture_url": "user image url"
+    }
+  ],
+  "bans": [
+    {
+      "user_id": "banned user id",
+      "profile_picture_url": "banned user image url",
+      "username": "username"
+    }
+  ],
+  "invitations": [
+    {
+      "user_id": "banned user id",
+      "profile_picture_url": "banned user image url",
+      "username": "username"
+    }
+  ],
+  "config": {
+    "server_image_url": "image url"
+  }
 }
