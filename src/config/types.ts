@@ -20,6 +20,7 @@ export interface IMongoConfig {
 export interface IServicesConfig {
   users: string;
   cdn: string;
+  channels: string;
 }
 
 export interface ICloudflareConfig {

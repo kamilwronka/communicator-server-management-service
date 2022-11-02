@@ -7,12 +7,13 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
+import { ChannelsService } from 'src/channels/channels.service';
 
 import { InvitesService } from 'src/invites/invites.service';
 import { UsersService } from 'src/users/users.service';
 import { CreateServerDto } from './dto/create-server.dto';
-import { EventLogDestination } from './enums/eventLogDestination.enum';
-import { EventLogType } from './enums/eventLogType.enum';
+import { EventDestination } from './enums/event-destination.enum';
+import { EventType } from './enums/event-type.enum';
 import { EPermissions } from './roles/enums/permissions.enum';
 import { Role } from './roles/schemas/role.schema';
 
@@ -25,6 +26,7 @@ export class ServersService {
     @Inject(forwardRef(() => InvitesService))
     private inviteService: InvitesService,
     private readonly usersService: UsersService,
+    private readonly channelsService: ChannelsService,
   ) {}
 
   async findServerById(serverId: string): Promise<ServerDocument> {
@@ -82,13 +84,13 @@ export class ServersService {
       owner_id: userId,
       name: server.name,
       icon: null,
-      event_log: [
+      events: [
         {
-          destination: EventLogDestination.SERVER,
+          destination: EventDestination.SERVER,
           user_id: userId,
           username: user.username,
           profile_picture_url: user.profile_picture_url,
-          type: EventLogType.CREATION,
+          type: EventType.CREATION,
         },
       ],
       members: [
@@ -105,5 +107,28 @@ export class ServersService {
     const newServerInstance = new this.serverModel(serverData);
 
     return newServerInstance.save();
+  }
+
+  async getChannels(userId: string, serverId: string) {
+    await this.getServer(userId, serverId);
+
+    const response = await this.channelsService.getServerChannels(serverId);
+
+    return response;
+  }
+
+  async getServerChannelRTCToken(
+    userId: string,
+    serverId: string,
+    channelId: string,
+  ) {
+    await this.getServer(userId, serverId);
+
+    const response = await this.channelsService.getServerChannelRTCToken(
+      userId,
+      channelId,
+    );
+
+    return response;
   }
 }

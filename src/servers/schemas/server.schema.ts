@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Transform, Type } from 'class-transformer';
 import { Document } from 'mongoose';
 import { Ban, ServerBanSchema } from './ban.schema';
-import { EventLog, ServerEventLogSchema } from './eventLog.schema';
+import { Event, ServerEventSchema } from './event.schema';
 import { Member, ServerMemberSchema } from './member.schema';
 import { Role, ServerRoleSchema } from '../roles/schemas/role.schema';
 
@@ -30,10 +30,10 @@ export class Server {
   @Prop({ type: [ServerMemberSchema], default: [] })
   members: Member[];
 
-  @Type(() => EventLog)
+  @Type(() => Event)
   @Exclude()
-  @Prop({ type: [ServerEventLogSchema], default: [] })
-  event_log: EventLog[];
+  @Prop({ type: [ServerEventSchema], default: [] })
+  events: Event[];
 
   @Type(() => Ban)
   @Exclude()

@@ -1,18 +1,25 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { IServicesConfig } from 'src/config/types';
 import { ChannelsService } from './channels.service';
-import { ChannelsController } from './channels.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { Channel, ChannelSchema } from './schemas/channel.schema';
-import { ServersModule } from 'src/servers/servers.module';
-import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Channel.name, schema: ChannelSchema }]),
-    forwardRef(() => ServersModule),
-    UsersModule,
+    HttpModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const { channels } = configService.get<IServicesConfig>('services');
+
+        return {
+          baseURL: channels,
+          maxRedirects: 5,
+          timeout: 5000,
+        };
+      },
+    }),
   ],
   providers: [ChannelsService],
-  controllers: [ChannelsController],
+  exports: [ChannelsService],
 })
 export class ChannelsModule {}

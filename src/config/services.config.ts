@@ -13,10 +13,13 @@ export default registerAs('services', (): IServicesConfig => {
     config = {
       users: `${mockSvcUrl}/users`,
       cdn: CDN_URL,
+      // channels: `${mockSvcUrl}/channels`,
+      channels: 'http://channels:4000',
     };
   } else {
     config = {
       users: 'http://users:4000',
+      channels: 'http://channels:4000',
       cdn: CDN_URL,
     };
   }

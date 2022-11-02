@@ -16,6 +16,8 @@ import { UpdateServerSettingsDto } from './dto/update-server-settings.dto';
 import { Server, ServerDocument } from '../schemas/server.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { ChannelsService } from 'src/channels/channels.service';
+import { CreateChannelDto } from './dto/create-channel.dto';
 
 @Injectable()
 export class ManagementService {
@@ -24,6 +26,7 @@ export class ManagementService {
     private readonly serversService: ServersService,
     private readonly configService: ConfigService,
     private readonly s3Client: S3Client,
+    private readonly channelsService: ChannelsService,
   ) {}
 
   async updateServerSettings(
@@ -83,5 +86,25 @@ export class ManagementService {
     );
 
     return { key, uploadUrl: presignedUrl };
+  }
+
+  async createChannel(
+    userId: string,
+    serverId: string,
+    createChannelData: CreateChannelDto,
+  ) {
+    const server = await this.serversService.getServer(userId, serverId);
+
+    // @TODO - here will come roles-checking etc
+    if (server.owner_id !== userId) {
+      throw new ForbiddenException();
+    }
+
+    const response = await this.channelsService.createServerChannel(
+      serverId,
+      createChannelData,
+    );
+
+    return response;
   }
 }

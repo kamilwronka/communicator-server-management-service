@@ -16,6 +16,11 @@ import {
 import { Server } from '../schemas/server.schema';
 import { ManagementService } from './management.service';
 import { TUploadServerImageResponse } from './types';
+import {
+  CreateChannelDto,
+  CreateChannelParamsDto,
+} from './dto/create-channel.dto';
+import { TChannel } from 'src/channels/types';
 
 @Controller('')
 export class ManagementController {
@@ -35,13 +40,26 @@ export class ManagementController {
     );
   }
 
-  @Post(':serverId/upload-image')
+  @Post(':serverId/images')
   async uploadServerImage(
     @UserId() userId: string,
     @Param() params: UploadServerImageParamsDto,
     @Body() uploadServerImageData: UploadServerImageDto,
   ): Promise<TUploadServerImageResponse> {
     return this.managementService.uploadServerImage(
+      userId,
+      params.serverId,
+      uploadServerImageData,
+    );
+  }
+
+  @Post(':serverId/channels')
+  async createChannel(
+    @UserId() userId: string,
+    @Param() params: CreateChannelParamsDto,
+    @Body() uploadServerImageData: CreateChannelDto,
+  ): Promise<TChannel> {
+    return this.managementService.createChannel(
       userId,
       params.serverId,
       uploadServerImageData,

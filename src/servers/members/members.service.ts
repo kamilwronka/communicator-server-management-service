@@ -11,6 +11,7 @@ import { InvitesService } from 'src/invites/invites.service';
 import { Member } from 'src/servers/schemas/member.schema';
 import { Server, ServerDocument } from 'src/servers/schemas/server.schema';
 import { UsersService } from 'src/users/users.service';
+import { CreateMemberDto } from './dto/create-member.dto';
 
 @Injectable()
 export class MembersService {
@@ -21,7 +22,11 @@ export class MembersService {
     private readonly usersService: UsersService,
   ) {}
 
-  async addMember(userId: string, serverId: string, inviteId: string) {
+  async createMember(
+    userId: string,
+    serverId: string,
+    { inviteId }: CreateMemberDto,
+  ) {
     // check if invite is valid
     await this.inviteService.getInvite(inviteId);
     const user = await this.usersService.getUserById(userId);

@@ -13,14 +13,23 @@ import { ConfigService } from '@nestjs/config';
 import { ICloudflareConfig } from 'src/config/types';
 import { RolesService } from './roles/roles.service';
 import { RolesController } from './roles/roles.controller';
+import { MembersController } from './members/members.controller';
+import { MembersService } from './members/members.service';
+import { ChannelsModule } from 'src/channels/channels.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Server.name, schema: ServerSchema }]),
     forwardRef(() => InvitesModule),
     UsersModule,
+    ChannelsModule,
   ],
-  controllers: [ServersController, ManagementController, RolesController],
+  controllers: [
+    ServersController,
+    ManagementController,
+    RolesController,
+    MembersController,
+  ],
   providers: [
     ServersService,
     ManagementService,
@@ -42,6 +51,7 @@ import { RolesController } from './roles/roles.controller';
       },
     },
     RolesService,
+    MembersService,
   ],
   exports: [ServersService],
 })

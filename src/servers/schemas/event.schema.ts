@@ -1,22 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Transform } from 'class-transformer';
 import { Document } from 'mongoose';
+import { EventDestination } from '../enums/event-destination.enum';
 
-import { EventLogDestination } from '../enums/eventLogDestination.enum';
-import { EventLogType } from '../enums/eventLogType.enum';
+import { EventType } from '../enums/event-type.enum';
 
-export type EventLogDocument = EventLog & Document;
+export type EventDocument = Event & Document;
 
 @Schema()
-export class EventLog {
+export class Event {
   @Transform(({ value }) => value.toString(), { toPlainOnly: true })
   _id?: string;
 
   @Prop()
-  type: EventLogType;
+  type: EventType;
 
   @Prop()
-  destination: EventLogDestination;
+  destination: EventDestination;
 
   @Prop()
   user_id: string;
@@ -28,4 +28,4 @@ export class EventLog {
   profile_picture_url: string;
 }
 
-export const ServerEventLogSchema = SchemaFactory.createForClass(EventLog);
+export const ServerEventSchema = SchemaFactory.createForClass(Event);

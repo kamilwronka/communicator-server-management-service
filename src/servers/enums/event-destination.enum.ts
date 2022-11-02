@@ -1,4 +1,4 @@
-export enum EventLogDestination {
+export enum EventDestination {
   CHANNEL = 'channel',
   SERVER = 'server',
   ROLE = 'role',

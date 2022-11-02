@@ -15,9 +15,8 @@ import { ServersModule } from './servers/servers.module';
 import { InvitesModule } from './invites/invites.module';
 import { HealthController } from './health/health.controller';
 
-import { ChannelsModule } from './channels/channels.module';
-import { MembersModule } from './members/members.module';
 import { UsersModule } from './users/users.module';
+import { ChannelsModule } from './channels/channels.module';
 
 @Module({
   imports: [
@@ -37,8 +36,6 @@ import { UsersModule } from './users/users.module';
     }),
     InvitesModule,
     TerminusModule,
-    ChannelsModule,
-    MembersModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [
@@ -73,6 +70,7 @@ import { UsersModule } from './users/users.module';
       },
     }),
     UsersModule,
+    ChannelsModule,
   ],
   controllers: [HealthController],
 })
