@@ -9,16 +9,16 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 import { ICloudflareConfig } from 'src/config/types';
 import { generateFileUploadData } from 'src/helpers/generateFileUploadData.helper';
-import { UploadServerImageDto } from './dto/uploadServerImage.dto';
-import { ServersService } from './servers.service';
+import { UploadServerImageDto } from './dto/upload-server-image.dto';
+import { ServersService } from '../servers.service';
 import { TUploadServerImageResponse } from './types';
-import { UpdateServerSettingsDto } from './dto/updateServerSettings.dto';
-import { Server, ServerDocument } from './schemas/server.schema';
+import { UpdateServerSettingsDto } from './dto/update-server-settings.dto';
+import { Server, ServerDocument } from '../schemas/server.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
-export class ServersManagementService {
+export class ManagementService {
   constructor(
     @InjectModel(Server.name) private serverModel: Model<ServerDocument>,
     private readonly serversService: ServersService,
@@ -29,7 +29,7 @@ export class ServersManagementService {
   async updateServerSettings(
     userId: string,
     serverId: string,
-    { icon, name }: UpdateServerSettingsDto,
+    updateServerData: UpdateServerSettingsDto,
   ): Promise<Server> {
     const server = await this.serversService.getServer(userId, serverId);
 
@@ -38,13 +38,11 @@ export class ServersManagementService {
       throw new ForbiddenException();
     }
 
-    if (icon) {
-      server.icon = icon;
-    }
+    const changedValues = Object.keys(updateServerData);
 
-    if (name) {
-      server.name = name;
-    }
+    changedValues.forEach((value) => {
+      server[value] = updateServerData[value];
+    });
 
     const updatedServer = await server.save();
 

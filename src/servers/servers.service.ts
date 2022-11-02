@@ -10,11 +10,11 @@ import { Model, Types } from 'mongoose';
 
 import { InvitesService } from 'src/invites/invites.service';
 import { UsersService } from 'src/users/users.service';
-import { CreateServerDto } from './dto/createServer.dto';
+import { CreateServerDto } from './dto/create-server.dto';
 import { EventLogDestination } from './enums/eventLogDestination.enum';
 import { EventLogType } from './enums/eventLogType.enum';
-import { EPermissions } from './enums/permissions.enum';
-import { Role } from './schemas/role.schema';
+import { EPermissions } from './roles/enums/permissions.enum';
+import { Role } from './roles/schemas/role.schema';
 
 import { Server, ServerDocument } from './schemas/server.schema';
 

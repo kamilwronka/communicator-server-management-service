@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import { Ban, ServerBanSchema } from './ban.schema';
 import { EventLog, ServerEventLogSchema } from './eventLog.schema';
 import { Member, ServerMemberSchema } from './member.schema';
-import { Role, ServerRoleSchema } from './role.schema';
+import { Role, ServerRoleSchema } from '../roles/schemas/role.schema';
 
 export type ServerDocument = Server & Document;
 

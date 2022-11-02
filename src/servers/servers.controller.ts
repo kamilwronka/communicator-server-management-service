@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserId } from 'src/decorators/userId.decorator';
-import { CreateServerDto } from './dto/createServer.dto';
+import { CreateServerDto } from './dto/create-server.dto';
 import { Server } from './schemas/server.schema';
 import { ServersService } from './servers.service';
 

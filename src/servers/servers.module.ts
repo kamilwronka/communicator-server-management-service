@@ -7,12 +7,12 @@ import { UsersModule } from 'src/users/users.module';
 import { Server, ServerSchema } from './schemas/server.schema';
 import { ServersController } from './servers.controller';
 import { ServersService } from './servers.service';
-import { ServersManagementService } from './servers-management.service';
-import { ServersManagementController } from './servers-management.controller';
+import { ManagementService } from './management/management.service';
+import { ManagementController } from './management/management.controller';
 import { ConfigService } from '@nestjs/config';
 import { ICloudflareConfig } from 'src/config/types';
-import { RolesService } from './roles.service';
-import { RolesController } from './roles.controller';
+import { RolesService } from './roles/roles.service';
+import { RolesController } from './roles/roles.controller';
 
 @Module({
   imports: [
@@ -20,14 +20,10 @@ import { RolesController } from './roles.controller';
     forwardRef(() => InvitesModule),
     UsersModule,
   ],
-  controllers: [
-    ServersController,
-    ServersManagementController,
-    RolesController,
-  ],
+  controllers: [ServersController, ManagementController, RolesController],
   providers: [
     ServersService,
-    ServersManagementService,
+    ManagementService,
     {
       provide: S3Client,
       inject: [ConfigService],

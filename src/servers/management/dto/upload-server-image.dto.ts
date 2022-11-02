@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
+import { MONGO_ID_REGEX } from 'src/constants/validation.constants';
 
 export class UploadServerImageDto {
   @IsNotEmpty()
@@ -12,6 +13,6 @@ export class UploadServerImageDto {
 
 export class UploadServerImageParamsDto {
   @IsString()
-  @Matches(/^[0-9a-fA-F]{24}$/)
+  @Matches(MONGO_ID_REGEX)
   serverId: string;
 }

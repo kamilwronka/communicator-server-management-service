@@ -4,8 +4,8 @@ import { Model, Types } from 'mongoose';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto, UpdateRoleParamsDto } from './dto/update-role.dto';
 import { Role } from './schemas/role.schema';
-import { Server, ServerDocument } from './schemas/server.schema';
-import { ServersService } from './servers.service';
+import { Server, ServerDocument } from '../schemas/server.schema';
+import { ServersService } from '../servers.service';
 
 @Injectable()
 export class RolesService {
