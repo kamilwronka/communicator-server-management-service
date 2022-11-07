@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
-import { ICloudflareConfig } from 'src/config/types';
+import { IAWSConfig } from 'src/config/types';
 import { generateFileUploadData } from 'src/helpers/generateFileUploadData.helper';
 import { UploadServerImageDto } from './dto/upload-server-image.dto';
 import { ServersService } from '../servers.service';
@@ -64,8 +64,7 @@ export class ManagementService {
       throw new ForbiddenException();
     }
 
-    const { bucketName } =
-      this.configService.get<ICloudflareConfig>('cloudflare');
+    const { bucketName } = this.configService.get<IAWSConfig>('aws');
 
     const { key, mimeType } = generateFileUploadData(
       `servers/${serverId}`,

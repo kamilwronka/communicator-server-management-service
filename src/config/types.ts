@@ -23,10 +23,9 @@ export interface IServicesConfig {
   channels: string;
 }
 
-export interface ICloudflareConfig {
-  apiKey: string;
+export interface IAWSConfig {
+  accessKeyId: string;
   secret: string;
-  accountId: string;
   bucketName: string;
 }
 

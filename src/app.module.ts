@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TerminusModule } from '@nestjs/terminus';
 
-import cloudflareConfig from './config/cloudflare.config';
+import awsConfig from './config/aws.config';
 import servicesConfig from './config/services.config';
 import mongoConfig from './config/mongo.config';
 import livekitConfig from './config/livekit.config';
@@ -38,13 +38,7 @@ import { ChannelsModule } from './channels/channels.module';
     TerminusModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [
-        appConfig,
-        livekitConfig,
-        mongoConfig,
-        servicesConfig,
-        cloudflareConfig,
-      ],
+      load: [appConfig, livekitConfig, mongoConfig, servicesConfig, awsConfig],
       cache: true,
       validationSchema: Joi.object({
         ENV: Joi.string()
@@ -57,10 +51,9 @@ import { ChannelsModule } from './channels/channels.module';
         MONGODB_HOST: Joi.string(),
         MONGODB_PORT: Joi.string(),
         MONGODB_DATABASE: Joi.string(),
-        CLOUDFLARE_ACCOUNT_ID: Joi.string(),
-        CLOUDFLARE_ACCESS_KEY_ID: Joi.string(),
-        CLOUDFLARE_SECRET_ACCESS_KEY: Joi.string(),
-        CLOUDFLARE_R2_BUCKET_NAME: Joi.string(),
+        AWS_ACCESS_KEY_ID: Joi.string(),
+        AWS_SECRET_ACCESS_KEY: Joi.string(),
+        AWS_S3_BUCKET_NAME: Joi.string(),
         LIVEKIT_API_KEY: Joi.string(),
         LIVEKIT_API_SECRET: Joi.string(),
       }),

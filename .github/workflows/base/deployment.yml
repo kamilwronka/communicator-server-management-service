@@ -35,8 +35,8 @@ spec:
             - name: CDN_URL
               valueFrom:
                 secretKeyRef:
-                  name: cloudflare
-                  key: cdn-url
+                  name: cdn
+                  key: cdnUrl
             #mongo
             - name: MONGODB_HOST
               value: mongodb
@@ -51,27 +51,22 @@ spec:
                 secretKeyRef:
                   name: mongodb
                   key: mongodb-root-password
-            # cloudflare
-            - name: CLOUDFLARE_ACCOUNT_ID
+            # aws
+            - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
-                  name: cloudflare
-                  key: cloudflare-account-id
-            - name: CLOUDFLARE_ACCESS_KEY_ID
+                  name: aws
+                  key: aws-access-key-id
+            - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: cloudflare
-                  key: cloudflare-access-key-id
-            - name: CLOUDFLARE_SECRET_ACCESS_KEY
+                  name: aws
+                  key: aws-secret-access-key
+            - name: AWS_S3_BUCKET_NAME
               valueFrom:
                 secretKeyRef:
-                  name: cloudflare
-                  key: cloudflare-secret-access-key
-            - name: CLOUDFLARE_R2_BUCKET_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: cloudflare
-                  key: cloudflare-r2-bucket-name
+                  name: aws
+                  key: aws-s3-bucket-name
             - name: LIVEKIT_API_KEY
               value: changeme
             - name: LIVEKIT_API_SECRET

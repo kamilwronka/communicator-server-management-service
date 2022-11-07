@@ -10,7 +10,7 @@ import { ServersService } from './servers.service';
 import { ManagementService } from './management/management.service';
 import { ManagementController } from './management/management.controller';
 import { ConfigService } from '@nestjs/config';
-import { ICloudflareConfig } from 'src/config/types';
+import { IAWSConfig } from 'src/config/types';
 import { RolesService } from './roles/roles.service';
 import { RolesController } from './roles/roles.controller';
 import { MembersController } from './members/members.controller';
@@ -37,14 +37,12 @@ import { ChannelsModule } from 'src/channels/channels.module';
       provide: S3Client,
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const { accountId, apiKey, secret } =
-          configService.get<ICloudflareConfig>('cloudflare');
+        const { accessKeyId, secret } = configService.get<IAWSConfig>('aws');
 
         return new S3Client({
-          region: 'auto',
-          endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+          region: 'eu-central-1',
           credentials: {
-            accessKeyId: apiKey,
+            accessKeyId,
             secretAccessKey: secret,
           },
         });
