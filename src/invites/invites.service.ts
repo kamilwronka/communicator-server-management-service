@@ -45,13 +45,13 @@ export class InvitesService {
     }
 
     const user = await this.usersService.getUserById(userId);
-    const { user_id, profile_picture_url, username } = user;
+    const { id, profile_picture_url, username } = user;
 
     const invitationData: Invite = {
       max_age,
       max_uses,
       inviter: {
-        user_id,
+        id,
         profile_picture_url,
         username,
       },
@@ -81,7 +81,7 @@ export class InvitesService {
   async deleteInvite(userId: string, inviteId: string) {
     const invite = await this.getInvite(inviteId);
 
-    if (invite.inviter.user_id !== userId) {
+    if (invite.inviter.id !== userId) {
       throw new ForbiddenException();
     }
 

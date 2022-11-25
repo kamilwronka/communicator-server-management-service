@@ -15,7 +15,7 @@ export class Ban {
   _id: string;
 
   @Prop()
-  user_id: string;
+  id: string;
 
   @Prop()
   username: string;

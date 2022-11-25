@@ -19,7 +19,7 @@ export class Event {
   destination: EventDestination;
 
   @Prop()
-  user_id: string;
+  id: string;
 
   @Prop()
   username: string;

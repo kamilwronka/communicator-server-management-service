@@ -20,7 +20,7 @@ export class Server {
 @Schema({ _id: false })
 export class Inviter {
   @Prop()
-  user_id: string;
+  id: string;
 
   @Prop()
   username: string;

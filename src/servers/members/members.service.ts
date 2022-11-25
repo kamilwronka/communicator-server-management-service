@@ -32,14 +32,14 @@ export class MembersService {
     const user = await this.usersService.getUserById(userId);
 
     const server = await this.serverModel.findById(serverId);
-    const exists = server?.members.find((member) => member.user_id === userId);
+    const exists = server?.members.find((member) => member.id === userId);
 
     if (exists) {
       throw new BadRequestException('User already joined this server.');
     }
 
     const member: Member = {
-      user_id: user.user_id,
+      id: user.id,
       username: user.username,
       profile_picture_url: user.profile_picture_url,
       roles: [],

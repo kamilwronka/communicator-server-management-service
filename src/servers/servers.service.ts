@@ -41,7 +41,7 @@ export class ServersService {
 
   async findServersByUserId(userId: string): Promise<Server[]> {
     const servers = await this.serverModel.find({
-      members: { $elemMatch: { user_id: userId } },
+      members: { $elemMatch: { id: userId } },
     });
 
     return servers;
@@ -51,7 +51,7 @@ export class ServersService {
     const server = await this.findServerById(serverId);
 
     const member = server.members.find((member) => {
-      return member.user_id === userId;
+      return member.id === userId;
     });
 
     const canViewServer = server.owner_id === userId || member;
@@ -87,7 +87,7 @@ export class ServersService {
       events: [
         {
           destination: EventDestination.SERVER,
-          user_id: userId,
+          id: userId,
           username: user.username,
           profile_picture_url: user.profile_picture_url,
           type: EventType.CREATION,
@@ -95,7 +95,7 @@ export class ServersService {
       ],
       members: [
         {
-          user_id: userId,
+          id: userId,
           username: user.username,
           profile_picture_url: user.profile_picture_url,
           roles: [ownerRoleId],

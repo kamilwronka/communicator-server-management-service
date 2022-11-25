@@ -1,5 +1,5 @@
 export interface TUserData {
-  user_id: string;
+  id: string;
   email: string;
   profile_created: boolean;
   username: string;
