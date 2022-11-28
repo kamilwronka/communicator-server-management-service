@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
+import { logAxiosError } from 'src/helpers/logAxiosError.helper';
 import { TUserData } from './types';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class UsersService {
     const { data } = await firstValueFrom(
       this.httpService.get<TUserData>(`/internal/${userId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(error.message);
+          logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
         }),
       ),

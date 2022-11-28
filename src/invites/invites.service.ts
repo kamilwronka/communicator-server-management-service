@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
+import { logAxiosError } from 'src/helpers/logAxiosError.helper';
 
 import { CreateInviteDto } from './dto/create-invite.dto';
 import { DeleteInviteParamsDto } from './dto/delete-invite.dto';
@@ -15,11 +16,7 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.get(`/${inviteId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(
-            `Request to ${error.config.url} failed with status code ${
-              error.response.status
-            }. Details: ${JSON.stringify(error.response.data)}`,
-          );
+          logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -44,11 +41,7 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.post(``, requestData).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(
-            `Request to ${error.config.url} failed with status code ${
-              error.response.status
-            }. Details: ${JSON.stringify(error.response.data)}`,
-          );
+          logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -63,11 +56,7 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.delete(`/${inviteId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(
-            `Request to ${error.config.url} failed with status code ${
-              error.response.status
-            }. Details: ${JSON.stringify(error.response.data)}`,
-          );
+          logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -82,11 +71,7 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.get(`/servers/${serverId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(
-            `Request to ${error.config.url} failed with status code ${
-              error.response.status
-            }. Details: ${JSON.stringify(error.response.data)}`,
-          );
+          logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
         }),
       ),

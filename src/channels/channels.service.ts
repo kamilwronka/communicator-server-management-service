@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
+import { logAxiosError } from 'src/helpers/logAxiosError.helper';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { GetRTCTokenParamsDto } from './dto/get-rtc-token.dto';
 import { Channel, GetRTCTokenResponse } from './types';
@@ -17,7 +18,7 @@ export class ChannelsService {
     const { data } = await firstValueFrom(
       this.httpService.get<Channel[]>(`/servers/${serverId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(error.message);
+          logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -36,7 +37,7 @@ export class ChannelsService {
     const { data: responseData } = await firstValueFrom(
       this.httpService.post<Channel>(`/servers/${serverId}`, data).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(error.message);
+          logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -58,7 +59,7 @@ export class ChannelsService {
         )
         .pipe(
           catchError((error: AxiosError) => {
-            this.logger.error(error.message);
+            logAxiosError(this.logger, error);
             throw new BadGatewayException(error.message);
           }),
         ),
