@@ -15,7 +15,11 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.get(`/${inviteId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(error.message);
+          this.logger.error(
+            `Request to ${error.config.url} failed with status code ${
+              error.response.status
+            }. Details: ${JSON.stringify(error.response.data)}`,
+          );
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -40,7 +44,11 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.post(``, requestData).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(error.message);
+          this.logger.error(
+            `Request to ${error.config.url} failed with status code ${
+              error.response.status
+            }. Details: ${JSON.stringify(error.response.data)}`,
+          );
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -55,7 +63,11 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.delete(`/${inviteId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(error.message);
+          this.logger.error(
+            `Request to ${error.config.url} failed with status code ${
+              error.response.status
+            }. Details: ${JSON.stringify(error.response.data)}`,
+          );
           throw new BadGatewayException(error.message);
         }),
       ),
@@ -70,7 +82,11 @@ export class InvitesService {
     const { data } = await firstValueFrom(
       this.httpService.get(`/servers/${serverId}`).pipe(
         catchError((error: AxiosError) => {
-          this.logger.error(error.message);
+          this.logger.error(
+            `Request to ${error.config.url} failed with status code ${
+              error.response.status
+            }. Details: ${JSON.stringify(error.response.data)}`,
+          );
           throw new BadGatewayException(error.message);
         }),
       ),
