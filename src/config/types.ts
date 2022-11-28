@@ -1,15 +1,11 @@
-export enum EEnvironment {
-  LOCAL = 'local',
-  DEV = 'dev',
-  PROD = 'prod',
-}
+import { RuntimeEnvironment } from 'src/types/common';
 
-export interface IAppConfig {
-  env: string;
+export interface AppConfig {
+  env: RuntimeEnvironment;
   port: number;
 }
 
-export interface IMongoConfig {
+export interface MongoConfig {
   port: number;
   host: string;
   user: string;
@@ -17,19 +13,15 @@ export interface IMongoConfig {
   database: string;
 }
 
-export interface IServicesConfig {
+export interface ServicesConfig {
   users: string;
   cdn: string;
   channels: string;
+  invites: string;
 }
 
-export interface IAWSConfig {
+export interface AWSConfig {
   accessKeyId: string;
   secret: string;
   bucketName: string;
-}
-
-export interface ILivekitConfig {
-  apiKey: string;
-  secret: string;
 }

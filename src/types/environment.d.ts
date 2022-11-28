@@ -1,10 +1,9 @@
-import { EEnvironment } from './config/types';
-
+import { RuntimeEnvironment } from './common';
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
       PORT: number;
-      ENV: EEnvironment;
+      ENV: RuntimeEnvironment;
       CDN_URL: string;
 
       MONGODB_PASSWORD: string;

@@ -36,4 +36,4 @@ lerna-debug.log*
 
 .env
 
-sa-key.json
+.kpt-pipeline

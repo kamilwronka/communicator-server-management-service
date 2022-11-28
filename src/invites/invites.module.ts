@@ -1,21 +1,31 @@
+import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
+import { ServicesConfig } from 'src/config/types';
 
 import { ServersModule } from 'src/servers/servers.module';
 import { UsersModule } from 'src/users/users.module';
 import { InvitesController } from './invites.controller';
 import { InvitesService } from './invites.service';
-import { Invite, ServerInviteSchema } from './schemas/invite.schema';
 
 @Module({
   controllers: [InvitesController],
   providers: [InvitesService],
   imports: [
     forwardRef(() => ServersModule),
-    MongooseModule.forFeature([
-      { name: Invite.name, schema: ServerInviteSchema },
-    ]),
     UsersModule,
+    HttpModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const { invites } = configService.get<ServicesConfig>('services');
+
+        return {
+          baseURL: invites,
+          maxRedirects: 5,
+          timeout: 5000,
+        };
+      },
+    }),
   ],
   exports: [InvitesService],
 })

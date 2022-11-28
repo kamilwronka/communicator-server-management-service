@@ -1,22 +1,22 @@
-export enum EChannelType {
+export enum ChannelType {
   VOICE = 'VOICE',
   TEXT = 'TEXT',
   PARENT = 'PARENT',
 }
 
-export type TCreateServerChannelRequestBody = {
+export type CreateServerChannelRequestBody = {
   name: string;
   parentId?: string;
-  type: EChannelType;
+  type: ChannelType;
 };
 
-export type TChannel = {
+export type Channel = {
   _id: string;
   name: string;
   serverId: string;
-  type: EChannelType;
+  type: ChannelType;
 };
 
-export type TGetRTCTokenResponse = {
+export type GetRTCTokenResponse = {
   token: string;
 };

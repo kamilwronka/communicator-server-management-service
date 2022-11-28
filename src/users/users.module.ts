@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IServicesConfig } from 'src/config/types';
+import { ServicesConfig } from 'src/config/types';
 import { UsersService } from './users.service';
 
 @Module({
@@ -9,7 +9,7 @@ import { UsersService } from './users.service';
     HttpModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const { users } = configService.get<IServicesConfig>('services');
+        const { users } = configService.get<ServicesConfig>('services');
 
         return {
           baseURL: users,

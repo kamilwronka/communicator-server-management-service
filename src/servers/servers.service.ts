@@ -1,21 +1,13 @@
-import {
-  ForbiddenException,
-  forwardRef,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { ChannelsService } from 'src/channels/channels.service';
+import { Model } from 'mongoose';
+import { MembersService } from 'src/members/members.service';
+import { RolesService } from 'src/roles/roles.service';
 
-import { InvitesService } from 'src/invites/invites.service';
 import { UsersService } from 'src/users/users.service';
 import { CreateServerDto } from './dto/create-server.dto';
 import { EventDestination } from './enums/event-destination.enum';
 import { EventType } from './enums/event-type.enum';
-import { EPermissions } from './roles/enums/permissions.enum';
-import { Role } from './roles/schemas/role.schema';
 
 import { Server, ServerDocument } from './schemas/server.schema';
 
@@ -23,14 +15,15 @@ import { Server, ServerDocument } from './schemas/server.schema';
 export class ServersService {
   constructor(
     @InjectModel(Server.name) private serverModel: Model<ServerDocument>,
-    @Inject(forwardRef(() => InvitesService))
-    private inviteService: InvitesService,
     private readonly usersService: UsersService,
-    private readonly channelsService: ChannelsService,
+    private readonly rolesService: RolesService,
+    private readonly membersService: MembersService,
   ) {}
 
   async findServerById(serverId: string): Promise<ServerDocument> {
-    const server = await this.serverModel.findById(serverId);
+    const server = await this.serverModel
+      .findById(serverId)
+      .populate(['roles', 'members']);
 
     if (!server) {
       throw new NotFoundException();
@@ -40,8 +33,12 @@ export class ServersService {
   }
 
   async findServersByUserId(userId: string): Promise<Server[]> {
-    const servers = await this.serverModel.find({
-      members: { $elemMatch: { id: userId } },
+    // possibly not optimal, to optimize later
+
+    const servers = await this.serverModel.find().populate({
+      path: 'members',
+      match: { userId },
+      transform: () => undefined,
     });
 
     return servers;
@@ -50,39 +47,18 @@ export class ServersService {
   async getServer(userId: string, serverId: string): Promise<ServerDocument> {
     const server = await this.findServerById(serverId);
 
-    const member = server.members.find((member) => {
-      return member.id === userId;
-    });
-
-    const canViewServer = server.owner_id === userId || member;
-
-    // check if user can view server
-    if (!canViewServer) {
-      throw new ForbiddenException();
-    }
+    // add user population later
 
     return server;
   }
 
-  async createServer(userId: string, server: CreateServerDto) {
+  async createServer(userId: string, data: CreateServerDto) {
     // get user data
     const user = await this.usersService.getUserById(userId);
 
-    // create new server
-    const ownerRoleId = new Types.ObjectId();
-    const defaultRoles: Role[] = [
-      {
-        name: 'owner',
-        permissions: [EPermissions.SHOW_CHANNELS, EPermissions.MANAGE_CHANNELS],
-        color: 'red',
-        importance: 1,
-        _id: ownerRoleId,
-      },
-    ];
-
     const serverData: Partial<Server> = {
       owner_id: userId,
-      name: server.name,
+      name: data.name,
       icon: null,
       events: [
         {
@@ -93,42 +69,18 @@ export class ServersService {
           type: EventType.CREATION,
         },
       ],
-      members: [
-        {
-          id: userId,
-          username: user.username,
-          profile_picture_url: user.profile_picture_url,
-          roles: [ownerRoleId],
-        },
-      ],
-      roles: defaultRoles,
     };
 
-    const newServerInstance = new this.serverModel(serverData);
+    const server = await new this.serverModel(serverData).save();
 
-    return newServerInstance.save();
-  }
+    const defaultRoleData = {
+      name: 'default',
+      color: null,
+    };
 
-  async getChannels(userId: string, serverId: string) {
-    await this.getServer(userId, serverId);
+    await this.rolesService.createRole(userId, server._id, defaultRoleData);
+    await this.membersService.createMember(userId, server._id, undefined, true);
 
-    const response = await this.channelsService.getServerChannels(serverId);
-
-    return response;
-  }
-
-  async getServerChannelRTCToken(
-    userId: string,
-    serverId: string,
-    channelId: string,
-  ) {
-    await this.getServer(userId, serverId);
-
-    const response = await this.channelsService.getServerChannelRTCToken(
-      userId,
-      channelId,
-    );
-
-    return response;
+    return server;
   }
 }

@@ -2,20 +2,20 @@ import { HttpService } from '@nestjs/axios';
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
-import {
-  TChannel,
-  TCreateServerChannelRequestBody,
-  TGetRTCTokenResponse,
-} from './types';
+import { CreateChannelDto } from './dto/create-channel.dto';
+import { GetRTCTokenParamsDto } from './dto/get-rtc-token.dto';
+import { Channel, GetRTCTokenResponse } from './types';
 
 @Injectable()
 export class ChannelsService {
   constructor(private readonly httpService: HttpService) {}
   private readonly logger = new Logger(ChannelsService.name);
 
-  async getServerChannels(serverId: string): Promise<TChannel[]> {
+  async getChannels(userId: string, serverId: string): Promise<Channel[]> {
+    // check roles
+
     const { data } = await firstValueFrom(
-      this.httpService.get<TChannel[]>(`/servers/${serverId}`).pipe(
+      this.httpService.get<Channel[]>(`/servers/${serverId}`).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(error.message);
           throw new BadGatewayException(error.message);
@@ -26,29 +26,34 @@ export class ChannelsService {
     return data;
   }
 
-  async createServerChannel(
-    serverId: string,
-    requestBody: TCreateServerChannelRequestBody,
-  ): Promise<TChannel> {
-    const { data } = await firstValueFrom(
-      this.httpService.post<TChannel>(`/servers/${serverId}`, requestBody).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.message);
-          throw new BadGatewayException(error.message);
-        }),
-      ),
-    );
-
-    return data;
-  }
-
-  async getServerChannelRTCToken(
+  async create(
     userId: string,
-    channelId: string,
-  ): Promise<TGetRTCTokenResponse> {
+    serverId: string,
+    data: CreateChannelDto,
+  ): Promise<Channel> {
+    // check roles
+
+    const { data: responseData } = await firstValueFrom(
+      this.httpService.post<Channel>(`/servers/${serverId}`, data).pipe(
+        catchError((error: AxiosError) => {
+          this.logger.error(error.message);
+          throw new BadGatewayException(error.message);
+        }),
+      ),
+    );
+
+    return responseData;
+  }
+
+  async getChannelRTCToken(
+    userId: string,
+    { channelId }: GetRTCTokenParamsDto,
+  ): Promise<GetRTCTokenResponse> {
+    // add role check
+
     const { data } = await firstValueFrom(
       this.httpService
-        .get<TGetRTCTokenResponse>(
+        .get<GetRTCTokenResponse>(
           `/${channelId}/server-rtc-token?userId=${userId}`,
         )
         .pipe(
