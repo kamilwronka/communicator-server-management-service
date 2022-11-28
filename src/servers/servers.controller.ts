@@ -39,4 +39,11 @@ export class ServersController {
   ): Promise<Server> {
     return this.serversService.getServer(userId, serverId);
   }
+
+  @Get('internal/:serverId')
+  async getInternalServerDetails(
+    @Param('serverId') serverId: string,
+  ): Promise<Server> {
+    return this.serversService.findServerById(serverId);
+  }
 }
