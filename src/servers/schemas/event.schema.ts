@@ -19,13 +19,7 @@ export class Event {
   destination: EventDestination;
 
   @Prop()
-  id: string;
-
-  @Prop()
-  username: string;
-
-  @Prop()
-  profile_picture_url: string;
+  userId: string;
 }
 
 export const ServerEventSchema = SchemaFactory.createForClass(Event);

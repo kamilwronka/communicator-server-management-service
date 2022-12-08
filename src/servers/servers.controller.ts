@@ -10,6 +10,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { UserId } from 'src/decorators/userId.decorator';
 import { CustomSerializerInterceptor } from 'src/interceptors/custom-serializer.interceptor';
 import { CreateServerDto } from './dto/create-server.dto';
+import { GetUserServersParamsDto } from './dto/get-user-servers.dto';
 import { Server } from './schemas/server.schema';
 import { ServersService } from './servers.service';
 
@@ -19,9 +20,11 @@ import { ServersService } from './servers.service';
 export class ServersController {
   constructor(private serversService: ServersService) {}
 
-  @Get('')
-  async getServers(@UserId() userId: string): Promise<Server[]> {
-    return this.serversService.findServersByUserId(userId);
+  @Get('internal/:userId')
+  async getUserServers(
+    @Param() params: GetUserServersParamsDto,
+  ): Promise<Server[]> {
+    return this.serversService.findServersByUserId(params.userId);
   }
 
   @Post('')

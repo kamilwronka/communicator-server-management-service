@@ -1,19 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Transform } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
 
 export type MemberDocument = Member & Document;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Member {
-  @ApiProperty()
-  @Transform((value) => value.obj._id.toString())
+  @Exclude()
   _id: string;
 
   @ApiProperty()
-  @Prop()
+  @Prop({ type: String })
   userId: string;
+
+  @Exclude()
+  @Prop({ type: String })
+  serverId: string;
 
   @ApiProperty()
   @Prop([{ type: String }])

@@ -1,7 +1,15 @@
-import { Body, Controller, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserId } from 'src/decorators/userId.decorator';
 import { Server } from 'src/servers/schemas/server.schema';
+import { CustomSerializerInterceptor } from '../interceptors/custom-serializer.interceptor';
 import { UpdateServerSettingsDto } from './dto/update-server-settings.dto';
 import {
   UploadServerImageDto,
@@ -15,6 +23,7 @@ import { UploadServerImageResponse } from './types';
 export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
+  @UseInterceptors(CustomSerializerInterceptor(Server))
   @Patch(':serverId')
   async updateServerSettings(
     @UserId() userId: string,

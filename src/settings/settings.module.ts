@@ -1,4 +1,5 @@
 import { S3Client } from '@aws-sdk/client-s3';
+import { RabbitMQConfig, RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AWSConfig } from 'src/config/types';
@@ -7,7 +8,17 @@ import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';
 
 @Module({
-  imports: [forwardRef(() => ServersModule)],
+  imports: [
+    forwardRef(() => ServersModule),
+    RabbitMQModule.forRootAsync(RabbitMQModule, {
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const config = configService.get<RabbitMQConfig>('rabbitmq');
+
+        return config;
+      },
+    }),
+  ],
   controllers: [SettingsController],
   providers: [
     SettingsService,

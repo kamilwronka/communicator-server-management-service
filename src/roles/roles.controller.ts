@@ -1,13 +1,33 @@
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { UserId } from 'src/decorators/userId.decorator';
+import { CustomSerializerInterceptor } from '../interceptors/custom-serializer.interceptor';
 import { CreateRoleDto, CreateRoleParamsDto } from './dto/create-role.dto';
 import { DeleteRoleParamsDto } from './dto/delete-role.dto';
+import { GetRolesParamsDto } from './dto/get-roles.dto';
 import { UpdateRoleDto, UpdateRoleParamsDto } from './dto/update-role.dto';
 import { RolesService } from './roles.service';
+import { Role } from './schemas/role.schema';
 
+@UseInterceptors(CustomSerializerInterceptor(Role))
 @Controller('')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
+
+  @Get(':serverId/roles')
+  async getRoles(@UserId() userId: string, @Param() params: GetRolesParamsDto) {
+    return this.rolesService.getRoles(userId, params.serverId);
+  }
 
   @Post(':serverId/roles')
   async createRole(
@@ -32,10 +52,12 @@ export class RolesController {
   }
 
   @Delete(':serverId/roles/:roleId')
+  @HttpCode(HttpStatus.NO_CONTENT)
   async deleteRole(
     @UserId() userId: string,
     @Param() params: DeleteRoleParamsDto,
   ) {
-    return this.rolesService.deleteRole(userId, params);
+    await this.rolesService.deleteRole(userId, params);
+    return;
   }
 }

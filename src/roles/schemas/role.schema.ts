@@ -1,20 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Transform } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
 
 import { Permissions } from '../enums/permissions.enum';
 
 export type RoleDocument = Role & Document;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Role {
   constructor(partial: Partial<Role>) {
     Object.assign(this, partial);
   }
 
-  @ApiProperty()
-  @Transform((value) => value.obj._id.toString())
+  @Exclude()
   _id: string;
 
   @ApiProperty()

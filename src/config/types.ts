@@ -15,7 +15,6 @@ export interface MongoConfig {
 
 export interface ServicesConfig {
   users: string;
-  cdn: string;
   channels: string;
   invites: string;
 }

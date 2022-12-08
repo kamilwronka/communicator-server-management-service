@@ -1,3 +1,4 @@
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   forwardRef,
   Inject,
@@ -8,8 +9,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { InvitesService } from 'src/invites/invites.service';
 import { ServersService } from 'src/servers/servers.service';
+import { RoutingKeys } from '../enums/routing-keys.enum';
 
 import { CreateMemberDto } from './dto/create-member.dto';
+import { GetMembersParamsDto } from './dto/members-params.dto';
 import { Member, MemberDocument } from './schemas/member.schema';
 
 @Injectable()
@@ -20,23 +23,30 @@ export class MembersService {
     private inviteService: InvitesService,
     @Inject(forwardRef(() => ServersService))
     private readonly serversService: ServersService,
+    private readonly amqpConnection: AmqpConnection,
   ) {}
+
+  async getMembers(userId: string, { serverId }: GetMembersParamsDto) {
+    const members = await this.memberModel.find({ serverId });
+
+    return members;
+  }
 
   async createMember(
     userId: string,
     serverId: string,
     data?: CreateMemberDto,
-    disableInviteCheck = false,
+    disableChecks = false,
   ) {
     // check if invite is valid
-    if (!disableInviteCheck) {
+    if (!disableChecks) {
       await this.inviteService.getInviteById(data?.inviteId);
     }
 
     const server = await this.serversService.findServerById(serverId);
 
     // check if exists
-    const exists = server.members.find((member) => member.userId === userId);
+    const exists = server.members.find((member) => member === userId);
 
     if (exists) {
       throw new UnprocessableEntityException('exists');
@@ -45,13 +55,19 @@ export class MembersService {
     const memberData: Partial<Member> = {
       userId,
       roles: [],
+      serverId,
     };
 
     const member = await new this.memberModel(memberData).save();
 
     // update server members
-    server.members.push(member._id);
+    server.members.push(member.userId);
     await server.save();
+
+    this.amqpConnection.publish('default', RoutingKeys.MEMBER_CREATE, {
+      userId,
+      serverId,
+    });
 
     return member;
   }

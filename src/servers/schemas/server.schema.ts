@@ -1,19 +1,20 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Exclude, Transform, Type } from 'class-transformer';
+import { Exclude, Type } from 'class-transformer';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Ban, ServerBanSchema } from './ban.schema';
 import { Event, ServerEventSchema } from './event.schema';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/roles/schemas/role.schema';
-import { Member } from 'src/members/schemas/member.schema';
 
 export type ServerDocument = Server & Document;
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, toJSON: { virtuals: true } })
 export class Server {
-  @ApiProperty()
-  @Transform((value) => value.obj._id.toString())
+  @Exclude()
   _id?: string;
+
+  @ApiProperty()
+  id: string;
 
   @ApiProperty()
   @Prop()
@@ -27,15 +28,16 @@ export class Server {
   @Prop()
   owner_id: string;
 
-  @ApiProperty({ isArray: true, type: Role })
+  @Exclude()
   @Prop([{ type: MongooseSchema.Types.ObjectId, ref: Role.name }])
   @Type(() => Role)
   roles: Role[];
 
-  @ApiProperty({ isArray: true, type: Member })
-  @Type(() => Member)
-  @Prop([{ type: MongooseSchema.Types.ObjectId, ref: Member.name }])
-  members: Member[];
+  @Exclude()
+  @ApiProperty({ isArray: true, type: String })
+  @Type(() => String)
+  @Prop([{ type: String }])
+  members: string[];
 
   @ApiProperty()
   @Type(() => Event)

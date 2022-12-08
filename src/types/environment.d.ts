@@ -4,7 +4,6 @@ declare global {
     interface ProcessEnv {
       PORT: number;
       ENV: RuntimeEnvironment;
-      CDN_URL: string;
 
       MONGODB_PASSWORD: string;
       MONGODB_USER: string;

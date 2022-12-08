@@ -16,7 +16,7 @@ export class ChannelsService {
     // check roles
 
     const { data } = await firstValueFrom(
-      this.httpService.get<Channel[]>(`/servers/${serverId}`).pipe(
+      this.httpService.get<Channel[]>(`/internal/servers/${serverId}`).pipe(
         catchError((error: AxiosError) => {
           logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);
@@ -34,8 +34,10 @@ export class ChannelsService {
   ): Promise<Channel> {
     // check roles
 
+    const requestData = { ...data, serverId };
+
     const { data: responseData } = await firstValueFrom(
-      this.httpService.post<Channel>(`/servers/${serverId}`, data).pipe(
+      this.httpService.post<Channel>(`/internal/servers`, requestData).pipe(
         catchError((error: AxiosError) => {
           logAxiosError(this.logger, error);
           throw new BadGatewayException(error.message);

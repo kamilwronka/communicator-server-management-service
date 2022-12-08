@@ -1,5 +1,6 @@
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   BadRequestException,
   ForbiddenException,
@@ -10,6 +11,7 @@ import { AWSConfig } from 'src/config/types';
 import { generateFileUploadData } from 'src/helpers/generateFileUploadData.helper';
 import { Server } from 'src/servers/schemas/server.schema';
 import { ServersService } from 'src/servers/servers.service';
+import { RoutingKeys } from '../enums/routing-keys.enum';
 import { UpdateServerSettingsDto } from './dto/update-server-settings.dto';
 import { UploadServerImageDto } from './dto/upload-server-image.dto';
 import { UploadServerImageResponse } from './types';
@@ -20,6 +22,7 @@ export class SettingsService {
     private readonly configService: ConfigService,
     private readonly s3Client: S3Client,
     private readonly serversService: ServersService,
+    private readonly amqpService: AmqpConnection,
   ) {}
 
   async update(
@@ -42,7 +45,13 @@ export class SettingsService {
 
     const updatedServer = await server.save();
 
-    return new Server(updatedServer.toJSON());
+    this.amqpService.publish(
+      'default',
+      RoutingKeys.SERVER_UPDATE,
+      updatedServer,
+    );
+
+    return updatedServer;
   }
 
   async uploadServerImage(

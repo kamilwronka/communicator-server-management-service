@@ -9,6 +9,8 @@ import { ServersService } from './servers.service';
 import { ChannelsModule } from 'src/channels/channels.module';
 import { RolesModule } from 'src/roles/roles.module';
 import { MembersModule } from 'src/members/members.module';
+import { RabbitMQConfig, RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,6 +20,14 @@ import { MembersModule } from 'src/members/members.module';
     forwardRef(() => MembersModule),
     UsersModule,
     ChannelsModule,
+    RabbitMQModule.forRootAsync(RabbitMQModule, {
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const config = configService.get<RabbitMQConfig>('rabbitmq');
+
+        return config;
+      },
+    }),
   ],
   controllers: [ServersController],
   providers: [ServersService],

@@ -30,6 +30,12 @@ export class RolesService {
     return role;
   }
 
+  async getRoles(userId: string, serverId: string): Promise<Role[]> {
+    const server = await this.serversService.getServer(userId, serverId);
+
+    return server.roles;
+  }
+
   async createRole(
     userId: string,
     serverId: string,
@@ -52,7 +58,7 @@ export class RolesService {
     { serverId, roleId }: UpdateRoleParamsDto,
     updateRoleData: UpdateRoleDto,
   ) {
-    const server = await this.serversService.getServer(userId, serverId);
+    await this.serversService.getServer(userId, serverId);
 
     // hier checking role management permissions
 
@@ -71,9 +77,9 @@ export class RolesService {
 
     // cleanup
     server.roles = server.roles.filter(
-      (role) => role._id.toString() === roleId,
+      (role) => role._id.toString() !== roleId,
     );
-    server.save();
+    await server.save();
 
     return this.roleModel.findByIdAndDelete(roleId);
   }
