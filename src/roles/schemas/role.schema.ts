@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Document } from 'mongoose';
 
-import { Permissions } from '../enums/permissions.enum';
+import { Permission } from '../enums/permission.enum';
 
 export type RoleDocument = Role & Document;
 
@@ -20,9 +20,12 @@ export class Role {
   @Prop({ required: true })
   name: string;
 
+  @Prop({ required: true, index: true })
+  serverId: string;
+
   @ApiProperty()
   @Prop({ default: [] })
-  permissions: Permissions[];
+  permissions: Permission[];
 
   @ApiProperty()
   @Prop({ default: null })
@@ -43,3 +46,8 @@ export class Role {
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);
+
+RoleSchema.pre('save', function (next) {
+  this.increment();
+  return next();
+});

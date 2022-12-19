@@ -2,10 +2,11 @@ import {
   IsEnum,
   IsHexColor,
   IsMongoId,
+  IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Permissions } from '../enums/permissions.enum';
+import { Permission } from '../enums/permission.enum';
 
 export class UpdateRoleDto {
   @IsOptional()
@@ -13,8 +14,9 @@ export class UpdateRoleDto {
   name: string;
 
   @IsOptional()
-  @IsEnum(Permissions, { each: true })
-  permissions: Permissions[];
+  @IsNotEmpty()
+  @IsEnum(Permission, { each: true })
+  permissions: Permission[];
 
   @IsOptional()
   @IsString()

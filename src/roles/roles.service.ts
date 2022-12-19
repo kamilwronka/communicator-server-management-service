@@ -11,6 +11,8 @@ import { UpdateRoleDto, UpdateRoleParamsDto } from './dto/update-role.dto';
 import { Role, RoleDocument } from './schemas/role.schema';
 import { ServersService } from 'src/servers/servers.service';
 import { DeleteRoleParamsDto } from './dto/delete-role.dto';
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
+import { RoutingKeys } from '../enums/routing-keys.enum';
 
 @Injectable()
 export class RolesService {
@@ -18,6 +20,7 @@ export class RolesService {
     @InjectModel(Role.name) private roleModel: Model<RoleDocument>,
     @Inject(forwardRef(() => ServersService))
     private readonly serversService: ServersService,
+    private readonly amqpConnection: AmqpConnection,
   ) {}
 
   async getRoleById(id: string) {
@@ -31,9 +34,9 @@ export class RolesService {
   }
 
   async getRoles(userId: string, serverId: string): Promise<Role[]> {
-    const server = await this.serversService.getServer(userId, serverId);
+    const roles = await this.roleModel.find({ serverId });
 
-    return server.roles;
+    return roles;
   }
 
   async createRole(
@@ -41,14 +44,17 @@ export class RolesService {
     serverId: string,
     { name, color }: CreateRoleDto,
   ): Promise<Role> {
-    const server = await this.serversService.getServer(userId, serverId);
+    // const server = await this.serversService.getServer(userId, serverId);
 
     // check if can manage roles
 
-    const role = await new this.roleModel({ name, color }).save();
-    server.roles.push(role);
+    const role = await new this.roleModel({ name, color, serverId }).save();
+    const json = role.toJSON();
 
-    await server.save();
+    await this.amqpConnection.publish('default', RoutingKeys.ROLE_CREATE, {
+      ...json,
+      version: json.__v,
+    });
 
     return role;
   }
@@ -68,19 +74,25 @@ export class RolesService {
       role[key] = value;
     });
 
-    return role.save();
+    const result = await role.save();
+    const json = result.toJSON();
+
+    await this.amqpConnection.publish('default', RoutingKeys.ROLE_UPDATE, {
+      ...json,
+      version: json.__v,
+    });
+
+    return result;
   }
 
   async deleteRole(userId: string, { serverId, roleId }: DeleteRoleParamsDto) {
     // check permissiones
     const server = await this.serversService.getServer(userId, serverId);
 
-    // cleanup
-    server.roles = server.roles.filter(
-      (role) => role._id.toString() !== roleId,
-    );
-    await server.save();
+    await this.roleModel.deleteOne({ id: roleId });
 
-    return this.roleModel.findByIdAndDelete(roleId);
+    await this.amqpConnection.publish('default', RoutingKeys.ROLE_DELETE, {
+      id: roleId,
+    });
   }
 }
