@@ -54,19 +54,16 @@ export class MembersService {
 
     const memberData: Partial<Member> = {
       userId,
-      roles: [],
+      roles: data.roles,
       serverId,
     };
 
     const member = await new this.memberModel(memberData).save();
 
-    // update server members
-    server.members.push(member.userId);
-    await server.save();
-
     this.amqpConnection.publish('default', RoutingKeys.MEMBER_CREATE, {
       userId,
       serverId,
+      roles: data.roles,
     });
 
     return member;

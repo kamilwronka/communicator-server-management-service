@@ -4,7 +4,9 @@ export class CreateMemberDto {
   @IsNotEmpty()
   @IsString()
   @IsMongoId()
-  inviteId: string;
+  inviteId?: string;
+
+  roles: string[];
 }
 
 export class CreateMemberParamsDto {

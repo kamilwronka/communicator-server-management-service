@@ -42,13 +42,18 @@ export class RolesService {
   async createRole(
     userId: string,
     serverId: string,
-    { name, color }: CreateRoleDto,
+    { name, color, permissions }: CreateRoleDto,
   ): Promise<Role> {
     // const server = await this.serversService.getServer(userId, serverId);
 
     // check if can manage roles
 
-    const role = await new this.roleModel({ name, color, serverId }).save();
+    const role = await new this.roleModel({
+      name,
+      color,
+      serverId,
+      permissions,
+    }).save();
     const json = role.toJSON();
 
     await this.amqpConnection.publish('default', RoutingKeys.ROLE_CREATE, {

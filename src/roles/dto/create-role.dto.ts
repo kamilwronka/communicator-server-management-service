@@ -1,10 +1,12 @@
 import {
+  IsEnum,
   IsHexColor,
   IsMongoId,
   IsNotEmpty,
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Permission } from '../enums/permission.enum';
 
 export class CreateRoleDto {
   @IsNotEmpty()
@@ -15,6 +17,11 @@ export class CreateRoleDto {
   @IsString()
   @IsHexColor()
   color: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  @IsEnum(Permission, { each: true })
+  permissions: Permission[];
 }
 
 export class CreateRoleParamsDto {

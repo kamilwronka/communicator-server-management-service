@@ -6,6 +6,7 @@ import { MembersService } from 'src/members/members.service';
 import { RolesService } from 'src/roles/roles.service';
 
 import { RoutingKeys } from '../enums/routing-keys.enum';
+import { Permission } from '../roles/enums/permission.enum';
 import { CreateServerDto } from './dto/create-server.dto';
 import { EventDestination } from './enums/event-destination.enum';
 import { EventType } from './enums/event-type.enum';
@@ -66,10 +67,29 @@ export class ServersService {
     const defaultRoleData = {
       name: 'default',
       color: null,
+      permissions: [Permission.VIEW_CHANNELS, Permission.SEND_MESSAGES],
     };
 
-    await this.rolesService.createRole(userId, server._id, defaultRoleData);
-    await this.membersService.createMember(userId, server._id, undefined, true);
+    const ownerRoleData = {
+      name: 'owner',
+      color: null,
+      permissions: [
+        Permission.MANAGE_CHANNELS,
+        Permission.SEND_MESSAGES,
+        Permission.VIEW_CHANNELS,
+      ],
+    };
+
+    const initialRoles = [defaultRoleData, ownerRoleData];
+    const promiseArray = initialRoles.map((role) =>
+      this.rolesService
+        .createRole(userId, server._id, role)
+        .then((roleData) => roleData._id),
+    );
+
+    const roles = await Promise.all(promiseArray);
+
+    await this.membersService.createMember(userId, server._id, { roles }, true);
 
     this.amqpService.publish('default', RoutingKeys.SERVER_CREATE, server);
 
