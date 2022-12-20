@@ -74,9 +74,13 @@ export class ServersService {
       name: 'owner',
       color: null,
       permissions: [
-        Permission.MANAGE_CHANNELS,
         Permission.SEND_MESSAGES,
+        Permission.DELETE_MESSAGES,
+        Permission.VIEW_MESSAGES,
+        Permission.SEND_ATTACHMENTS,
+
         Permission.VIEW_CHANNELS,
+        Permission.MANAGE_CHANNELS,
       ],
     };
 
