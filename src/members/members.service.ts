@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { InvitesService } from 'src/invites/invites.service';
 import { ServersService } from 'src/servers/servers.service';
-import { RoutingKeys } from '../enums/routing-keys.enum';
+import { RoutingKeys } from '../common/enums/routing-keys.enum';
 
 import { CreateMemberDto } from './dto/create-member.dto';
 import { GetMembersParamsDto } from './dto/members-params.dto';

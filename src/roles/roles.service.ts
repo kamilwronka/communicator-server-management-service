@@ -12,7 +12,7 @@ import { Role, RoleDocument } from './schemas/role.schema';
 import { ServersService } from 'src/servers/servers.service';
 import { DeleteRoleParamsDto } from './dto/delete-role.dto';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
-import { RoutingKeys } from '../enums/routing-keys.enum';
+import { RoutingKeys } from '../common/enums/routing-keys.enum';
 
 @Injectable()
 export class RolesService {

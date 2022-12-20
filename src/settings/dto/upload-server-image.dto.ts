@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
-import { MONGO_ID_REGEX } from 'src/constants/validation.constants';
+import { MONGO_ID_REGEX } from 'src/common/constants/validation.constants';
 
 export class UploadServerImageDto {
   @IsNotEmpty()

@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { MembersService } from 'src/members/members.service';
 import { RolesService } from 'src/roles/roles.service';
 
-import { RoutingKeys } from '../enums/routing-keys.enum';
+import { RoutingKeys } from '../common/enums/routing-keys.enum';
 import { Permission } from '../roles/enums/permission.enum';
 import { CreateServerDto } from './dto/create-server.dto';
 import { EventDestination } from './enums/event-destination.enum';

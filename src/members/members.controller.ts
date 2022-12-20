@@ -7,8 +7,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UserId } from 'src/decorators/userId.decorator';
-import { CustomSerializerInterceptor } from '../interceptors/custom-serializer.interceptor';
+import { UserId } from 'src/common/decorators/userId.decorator';
+import { CustomSerializerInterceptor } from '../common/interceptors/custom-serializer.interceptor';
 import {
   CreateMemberDto,
   CreateMemberParamsDto,

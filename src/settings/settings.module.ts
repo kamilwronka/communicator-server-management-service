@@ -2,7 +2,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { RabbitMQConfig, RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AWSConfig } from 'src/config/types';
+import { AWSConfig } from 'src/common/config/types';
 import { ServersModule } from 'src/servers/servers.module';
 import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';

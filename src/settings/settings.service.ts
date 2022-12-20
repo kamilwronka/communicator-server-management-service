@@ -7,11 +7,11 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AWSConfig } from 'src/config/types';
-import { generateFileUploadData } from 'src/helpers/generateFileUploadData.helper';
+import { AWSConfig } from 'src/common/config/types';
+import { generateFileUploadData } from 'src/common/helpers/generateFileUploadData.helper';
 import { Server } from 'src/servers/schemas/server.schema';
 import { ServersService } from 'src/servers/servers.service';
-import { RoutingKeys } from '../enums/routing-keys.enum';
+import { RoutingKeys } from '../common/enums/routing-keys.enum';
 import { UpdateServerSettingsDto } from './dto/update-server-settings.dto';
 import { UploadServerImageDto } from './dto/upload-server-image.dto';
 import { UploadServerImageResponse } from './types';

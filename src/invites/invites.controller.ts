@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UserId } from 'src/decorators/userId.decorator';
+import { UserId } from 'src/common/decorators/userId.decorator';
 import {
   CreateInviteDto,
   CreateInviteParamsDto,

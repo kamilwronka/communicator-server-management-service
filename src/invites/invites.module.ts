@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ServicesConfig } from 'src/config/types';
+import { ServicesConfig } from 'src/common/config/types';
 
 import { ServersModule } from 'src/servers/servers.module';
 import { UsersModule } from 'src/users/users.module';

@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Queues } from '../enums/queues.enum';
-import { RoutingKeys } from '../enums/routing-keys.enum';
+import { Queues } from '../common/enums/queues.enum';
+import { RoutingKeys } from '../common/enums/routing-keys.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

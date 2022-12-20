@@ -4,8 +4,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-import { AUTH_NAMESPACE } from 'src/constants/auth-namespace.constant';
-import { decodeJwtPayload } from 'src/helpers/decodeJwtPayload.helper';
+import { AUTH_NAMESPACE } from 'src/common/constants/auth-namespace.constant';
+import { decodeJwtPayload } from 'src/common/helpers/decodeJwtPayload.helper';
 
 export const UserId = createParamDecorator(function (
   data: unknown,

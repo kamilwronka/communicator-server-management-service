@@ -7,9 +7,9 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { UserId } from 'src/decorators/userId.decorator';
+import { UserId } from 'src/common/decorators/userId.decorator';
 import { Server } from 'src/servers/schemas/server.schema';
-import { CustomSerializerInterceptor } from '../interceptors/custom-serializer.interceptor';
+import { CustomSerializerInterceptor } from '../common/interceptors/custom-serializer.interceptor';
 import { UpdateServerSettingsDto } from './dto/update-server-settings.dto';
 import {
   UploadServerImageDto,

@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { BadGatewayException, Injectable, Logger } from '@nestjs/common';
 import { AxiosError } from 'axios';
 import { catchError, firstValueFrom } from 'rxjs';
-import { logAxiosError } from 'src/helpers/logAxiosError.helper';
+import { logAxiosError } from 'src/common/helpers/logAxiosError.helper';
 
 import { CreateInviteDto } from './dto/create-invite.dto';
 import { DeleteInviteParamsDto } from './dto/delete-invite.dto';

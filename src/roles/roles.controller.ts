@@ -10,8 +10,8 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { UserId } from 'src/decorators/userId.decorator';
-import { CustomSerializerInterceptor } from '../interceptors/custom-serializer.interceptor';
+import { UserId } from 'src/common/decorators/userId.decorator';
+import { CustomSerializerInterceptor } from '../common/interceptors/custom-serializer.interceptor';
 import { CreateRoleDto, CreateRoleParamsDto } from './dto/create-role.dto';
 import { DeleteRoleParamsDto } from './dto/delete-role.dto';
 import { GetRolesParamsDto } from './dto/get-roles.dto';
