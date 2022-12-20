@@ -60,6 +60,9 @@ export class MembersService {
 
     const member = await new this.memberModel(memberData).save();
 
+    server.members.push(member.userId);
+    await server.save();
+
     this.amqpConnection.publish('default', RoutingKeys.MEMBER_CREATE, {
       userId,
       serverId,
