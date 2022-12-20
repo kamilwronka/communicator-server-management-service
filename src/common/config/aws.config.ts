@@ -6,8 +6,13 @@ export default registerAs('aws', (): AWSConfig => {
     process.env;
 
   return {
-    secret: AWS_SECRET_ACCESS_KEY,
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    bucketName: AWS_S3_BUCKET_NAME,
+    s3ClientConfig: {
+      region: 'eu-central-1',
+      credentials: {
+        accessKeyId: AWS_ACCESS_KEY_ID,
+        secretAccessKey: AWS_SECRET_ACCESS_KEY,
+      },
+    },
+    bucket: AWS_S3_BUCKET_NAME,
   };
 });

@@ -7,18 +7,12 @@ import { ServersModule } from './servers/servers.module';
 import { InvitesModule } from './invites/invites.module';
 import { HealthController } from './health/health.controller';
 
-import { SettingsModule } from './settings/settings.module';
-import { RolesModule } from './roles/roles.module';
-import { MembersModule } from './members/members.module';
 import { CONFIG_MODULE_CONFIG } from './common/config/config-module.config';
 
 @Module({
   imports: [
     InvitesModule,
     ServersModule,
-    SettingsModule,
-    RolesModule,
-    MembersModule,
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) =>

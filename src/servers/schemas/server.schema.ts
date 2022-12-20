@@ -2,9 +2,8 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Exclude, Type } from 'class-transformer';
 import { Document, Schema as MongooseSchema } from 'mongoose';
 import { Ban, ServerBanSchema } from './ban.schema';
-import { Event, ServerEventSchema } from './event.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from 'src/roles/schemas/role.schema';
+import { Role } from '../roles/schemas/role.schema';
 
 export type ServerDocument = Server & Document;
 
@@ -32,18 +31,6 @@ export class Server {
   @Prop([{ type: MongooseSchema.Types.ObjectId, ref: Role.name }])
   @Type(() => Role)
   roles: Role[];
-
-  @Exclude()
-  @ApiProperty({ isArray: true, type: String })
-  @Type(() => String)
-  @Prop([{ type: String }])
-  members: string[];
-
-  @ApiProperty()
-  @Type(() => Event)
-  @Exclude()
-  @Prop({ type: [ServerEventSchema], default: [] })
-  events: Event[];
 
   @ApiProperty()
   @Type(() => Ban)

@@ -12,11 +12,11 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Queues } from '../common/enums/queues.enum';
-import { RoutingKeys } from '../common/enums/routing-keys.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersQueue } from './enums/users-queue.enum';
+import { UsersRoutingKey } from './enums/users-routing-key.enum';
 import { User, UserDocument } from './schemas/user.schema';
 
 @Injectable()
@@ -38,8 +38,8 @@ export class UsersService {
 
   @RabbitSubscribe({
     exchange: 'default',
-    routingKey: RoutingKeys.USER_CREATE,
-    queue: Queues.USER_CREATE,
+    routingKey: UsersRoutingKey.USER_CREATE,
+    queue: UsersQueue.USER_CREATE,
     errorBehavior: MessageHandlerErrorBehavior.NACK,
   })
   @UsePipes(ValidationPipe)
@@ -57,8 +57,8 @@ export class UsersService {
 
   @RabbitSubscribe({
     exchange: 'default',
-    routingKey: RoutingKeys.USER_UPDATE,
-    queue: Queues.USER_UPDATE,
+    routingKey: UsersRoutingKey.USER_UPDATE,
+    queue: UsersQueue.USER_UPDATE,
     errorBehavior: MessageHandlerErrorBehavior.NACK,
   })
   async update({ id, ...data }: UpdateUserDto) {
@@ -79,8 +79,8 @@ export class UsersService {
 
   @RabbitSubscribe({
     exchange: 'default',
-    routingKey: RoutingKeys.USER_DELETE,
-    queue: Queues.USER_DELETE,
+    routingKey: UsersRoutingKey.USER_DELETE,
+    queue: UsersQueue.USER_DELETE,
     errorBehavior: MessageHandlerErrorBehavior.NACK,
   })
   async delete({ id }: DeleteUserDto) {

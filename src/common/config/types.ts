@@ -1,3 +1,4 @@
+import { S3ClientConfig } from '@aws-sdk/client-s3';
 import { RuntimeEnvironment } from 'src/common/types/common';
 
 export interface AppConfig {
@@ -12,7 +13,6 @@ export interface ServicesConfig {
 }
 
 export interface AWSConfig {
-  accessKeyId: string;
-  secret: string;
-  bucketName: string;
+  s3ClientConfig: S3ClientConfig;
+  bucket: string;
 }
