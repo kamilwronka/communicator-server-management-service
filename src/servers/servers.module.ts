@@ -1,7 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { InvitesModule } from 'src/invites/invites.module';
 import { UsersModule } from 'src/users/users.module';
 import { Server, ServerSchema } from './schemas/server.schema';
 import { ServersController } from './servers.controller';
@@ -19,6 +18,9 @@ import { MembersController } from './members/members.controller';
 import { Event, EventSchema } from './events/schemas/event.schema';
 import { EventsService } from './events/events.service';
 import { EventsController } from './events/events.controller';
+import { InvitesController } from './invites/invites.controller';
+import { InvitesService } from './invites/invites.service';
+import { Invite, InviteSchema } from './invites/schemas/invite.schema';
 
 @Module({
   imports: [
@@ -27,8 +29,8 @@ import { EventsController } from './events/events.controller';
       { name: Role.name, schema: RoleSchema },
       { name: Member.name, schema: MemberSchema },
       { name: Event.name, schema: EventSchema },
+      { name: Invite.name, schema: InviteSchema },
     ]),
-    forwardRef(() => InvitesModule),
     UsersModule,
     RabbitMQModule.forRootAsync(RabbitMQModule, {
       inject: [ConfigService],
@@ -41,12 +43,14 @@ import { EventsController } from './events/events.controller';
     RolesController,
     MembersController,
     EventsController,
+    InvitesController,
   ],
   providers: [
     ServersService,
     RolesService,
     MembersService,
     EventsService,
+    InvitesService,
     {
       provide: S3Client,
       inject: [ConfigService],
