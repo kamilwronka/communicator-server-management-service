@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { UsersModule } from 'src/users/users.module';
@@ -21,6 +21,7 @@ import { EventsController } from './events/events.controller';
 import { InvitesController } from './invites/invites.controller';
 import { InvitesService } from './invites/invites.service';
 import { Invite, InviteSchema } from './invites/schemas/invite.schema';
+import { SingleInviteController } from './invites/single-invite.controller';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { Invite, InviteSchema } from './invites/schemas/invite.schema';
     MembersController,
     EventsController,
     InvitesController,
+    SingleInviteController,
   ],
   providers: [
     ServersService,
