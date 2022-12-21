@@ -19,6 +19,11 @@ import { ServersService } from './servers.service';
 export class ServersController {
   constructor(private serversService: ServersService) {}
 
+  @Get('')
+  async getUserServers(@UserId() userId: string): Promise<Server[]> {
+    return this.serversService.findUserServers(userId);
+  }
+
   @Get(':serverId')
   async getServerDetails(
     @UserId() userId: string,

@@ -58,6 +58,6 @@ export class MembersController {
 
   @Delete(':memberId')
   async deleteMember(@Param() params: DeleteMemberParamsDto) {
-    return this.membersService.deleteMember(params.memberId);
+    return this.membersService.deleteMember(params);
   }
 }

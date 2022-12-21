@@ -1,11 +1,16 @@
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import { Injectable } from '@nestjs/common';
-import { BadRequestException } from '@nestjs/common/exceptions';
+import {
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common/exceptions';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RolesService } from '../roles/roles.service';
+import { Server, ServerDocument } from '../schemas/server.schema';
 
 import { CreateMemberDto } from './dto/create-member.dto';
+import { DeleteMemberParamsDto } from './dto/delete-member.dto';
 import { GetMembersParamsDto } from './dto/members-params.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { MembersRoutingKey } from './enums/members-routing-key.enum';
@@ -15,6 +20,7 @@ import { Member, MemberDocument } from './schemas/member.schema';
 export class MembersService {
   constructor(
     @InjectModel(Member.name) private memberRepository: Model<MemberDocument>,
+    @InjectModel(Server.name) private serverRepository: Model<ServerDocument>,
     private readonly amqpConnection: AmqpConnection,
     private readonly rolesService: RolesService,
   ) {}
@@ -38,6 +44,11 @@ export class MembersService {
         serverId,
         roleIds,
       }).save();
+
+      const server = await this.serverRepository.findById(serverId);
+      server.members = [...new Set([...server.members, member.userId])];
+      await server.save();
+
       const populated = await member.populate(['roles', 'user']);
 
       this.publishMemberEvent(MembersRoutingKey.MEMBER_CREATE, populated);
@@ -53,7 +64,6 @@ export class MembersService {
     console.log(data.inviteId);
 
     const defaultRole = await this.rolesService.getDefaultServerRole(serverId);
-
     const member = await this.createMember(userId, serverId, [defaultRole._id]);
 
     return member;
@@ -75,14 +85,22 @@ export class MembersService {
     return updatedMember;
   }
 
-  async deleteMember(memberId: string) {
+  async deleteMember({ serverId, memberId }: DeleteMemberParamsDto) {
     const member = await this.memberRepository.findOneAndDelete({
       _id: memberId,
     });
 
-    this.publishMemberEvent(MembersRoutingKey.MEMBER_DELETE, member);
+    if (!member) {
+      throw new NotFoundException();
+    }
 
-    return;
+    const server = await this.serverRepository.findById(serverId);
+    server.members = [
+      ...new Set(server.members.filter((member) => member === memberId)),
+    ];
+    await server.save();
+
+    return this.publishMemberEvent(MembersRoutingKey.MEMBER_DELETE, member);
   }
 
   publishMemberEvent(key: MembersRoutingKey, data: MemberDocument) {

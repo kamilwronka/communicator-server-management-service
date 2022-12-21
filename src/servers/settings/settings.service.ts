@@ -33,7 +33,7 @@ export class SettingsService {
     const server = await this.serversService.getServer(userId, serverId);
 
     // @TODO - here will come roles-checking etc
-    if (server.owner_id !== userId) {
+    if (server.ownerId !== userId) {
       throw new ForbiddenException();
     }
 
@@ -62,7 +62,7 @@ export class SettingsService {
     const server = await this.serversService.getServer(userId, serverId);
 
     // @TODO - here will come roles-checking etc
-    if (server.owner_id !== userId) {
+    if (server.ownerId !== userId) {
       throw new ForbiddenException();
     }
 

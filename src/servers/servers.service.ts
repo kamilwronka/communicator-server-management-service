@@ -14,20 +14,26 @@ import { Server, ServerDocument } from './schemas/server.schema';
 @Injectable()
 export class ServersService {
   constructor(
-    @InjectModel(Server.name) private serverModel: Model<ServerDocument>,
+    @InjectModel(Server.name) private serverRepository: Model<ServerDocument>,
     private readonly rolesService: RolesService,
     private readonly membersService: MembersService,
     private readonly amqpConnection: AmqpConnection,
   ) {}
 
   async findServerById(serverId: string): Promise<ServerDocument> {
-    const server = await this.serverModel.findById(serverId).populate('roles');
+    const server = await this.serverRepository.findById(serverId);
 
     if (!server) {
       throw new NotFoundException();
     }
 
     return server;
+  }
+
+  async findUserServers(userId: string): Promise<Server[]> {
+    const servers = await this.serverRepository.find({ members: userId });
+
+    return servers;
   }
 
   async getServer(userId: string, serverId: string): Promise<ServerDocument> {
@@ -40,12 +46,12 @@ export class ServersService {
     // get user data
 
     const serverData: Partial<Server> = {
-      owner_id: userId,
+      ownerId: userId,
       name: data.name,
       icon: null,
     };
 
-    const server = await new this.serverModel(serverData).save();
+    const server = await new this.serverRepository(serverData).save();
 
     const promiseArray = INITIAL_ROLES.map((role) =>
       this.rolesService
