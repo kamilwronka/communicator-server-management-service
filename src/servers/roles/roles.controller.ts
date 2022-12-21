@@ -9,8 +9,10 @@ import {
   UseInterceptors,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UserId } from 'src/common/decorators/user-id.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { CustomSerializerInterceptor } from '../../common/interceptors/custom-serializer.interceptor';
 import { CreateRoleDto, CreateRoleParamsDto } from './dto/create-role.dto';
 import { DeleteRoleParamsDto } from './dto/delete-role.dto';
@@ -20,6 +22,7 @@ import { RolesService } from './roles.service';
 import { Role } from './schemas/role.schema';
 
 @UseInterceptors(CustomSerializerInterceptor(Role))
+@UseGuards(AuthGuard)
 @Controller('')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}

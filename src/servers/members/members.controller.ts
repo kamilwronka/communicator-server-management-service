@@ -7,9 +7,11 @@ import {
   Post,
   UseInterceptors,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { UserId } from 'src/common/decorators/user-id.decorator';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { CustomSerializerInterceptor } from '../../common/interceptors/custom-serializer.interceptor';
 import {
   CreateMemberDto,
@@ -26,6 +28,7 @@ import { Member } from './schemas/member.schema';
 
 @ApiTags('members')
 @UseInterceptors(CustomSerializerInterceptor(Member))
+@UseGuards(AuthGuard)
 @Controller(':serverId/members')
 export class MembersController {
   constructor(private membersService: MembersService) {}

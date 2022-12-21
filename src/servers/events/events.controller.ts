@@ -1,9 +1,17 @@
-import { Controller, Get, UseInterceptors, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseInterceptors,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { CustomSerializerInterceptor } from '../../common/interceptors/custom-serializer.interceptor';
 import { GetServerEventsParamsDto } from './dto/get-server-events.dto';
 import { EventsService } from './events.service';
 import { Event } from './schemas/event.schema';
 
+@UseGuards(AuthGuard)
 @UseInterceptors(CustomSerializerInterceptor(Event))
 @Controller(':serverId/events')
 export class EventsController {
