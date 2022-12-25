@@ -20,7 +20,12 @@ const DEFAULT_ROLE = {
   name: RestrictedRolesName.DEFAULT,
   color: '#808080',
   importance: 0,
-  permissions: [Permission.VIEW_CHANNELS, Permission.SEND_MESSAGES],
+  permissions: [
+    Permission.VIEW_CHANNELS,
+    Permission.SEND_MESSAGES,
+    Permission.VIEW_MESSAGES,
+    Permission.SEND_ATTACHMENTS,
+  ],
 };
 
 export const INITIAL_ROLES = [ADMIN_ROLE, DEFAULT_ROLE];
