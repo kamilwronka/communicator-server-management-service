@@ -1,5 +1,5 @@
 export enum UsersRoutingKey {
-  USER_CREATE = 'user.create',
-  USER_UPDATE = 'user.update',
-  USER_DELETE = 'user.delete',
+  CREATE = 'user.create',
+  UPDATE = 'user.update',
+  DELETE = 'user.delete',
 }

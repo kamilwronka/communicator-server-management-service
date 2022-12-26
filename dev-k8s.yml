@@ -1,7 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: dev
   name: servers
   labels:
     purpose: dev
@@ -27,7 +26,7 @@ spec:
             - name: PORT
               value: "4000"
             - name: ENV
-              value: dev
+              value: local
             #mongo
             - name: MONGODB_HOST
               value: mongo-mongodb
@@ -44,7 +43,7 @@ spec:
                   key: mongodb-root-password
             # rabbitmq
             - name: RABBITMQ_HOST
-              value: rabbimq-rabbitmq
+              value: rabbitmq
             - name: RABBITMQ_ACCESS_PORT
               value: "5672"
             - name: RABBITMQ_USER
@@ -52,7 +51,7 @@ spec:
             - name: RABBITMQ_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: rabbimq-rabbitmq
+                  name: rabbitmq
                   key: rabbitmq-password
             # aws
             # - name: AWS_ACCESS_KEY_ID
@@ -75,7 +74,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: dev
   name: servers
   labels:
     app: servers
@@ -96,7 +94,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: servers
-  namespace: dev
   annotations:
     konghq.com/strip-path: "true"
     konghq.com/preserve-host: "false"

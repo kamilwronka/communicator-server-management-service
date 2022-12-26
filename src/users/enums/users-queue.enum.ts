@@ -1,5 +1,5 @@
 export enum UsersQueue {
-  USER_CREATE = 'servers-user-create',
-  USER_UPDATE = 'servers-user-update',
-  USER_DELETE = 'servers-user-delete',
+  CREATE = 'servers-user-create',
+  UPDATE = 'servers-user-update',
+  DELETE = 'servers-user-delete',
 }

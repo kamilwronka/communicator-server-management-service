@@ -1,12 +1,8 @@
-import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
-import { USER_ID_REGEX } from '../constants/user-id.constant';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
   @IsNotEmpty()
   @IsString()
-  @Matches(USER_ID_REGEX, {
-    message: `Should match nanoid (${/[A-Za-z0-9_-]{21}/}) regex`,
-  })
   id: string;
 
   @IsOptional()
@@ -16,4 +12,10 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   avatar: string;
+
+  @IsNumber()
+  version: number;
+
+  @IsString()
+  version_hash: string;
 }

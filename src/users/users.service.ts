@@ -1,5 +1,4 @@
 import {
-  MessageHandlerErrorBehavior,
   Nack,
   RabbitSubscribe,
 } from '@golevelup/nestjs-rabbitmq';
@@ -7,11 +6,12 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-  UsePipes,
-  ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { DEAD_LETTER_EXCHANGE_NAME, DEFAULT_EXCHANGE_NAME } from 'src/common/config/rabbitmq.config';
+import { DLQRetryCheckerInterceptor } from 'src/common/interceptors/dlq-retry-checker.interceptor';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -23,7 +23,7 @@ import { User, UserDocument } from './schemas/user.schema';
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userRepository: Model<UserDocument>,
-  ) {}
+  ) { }
   private readonly logger = new Logger(UsersService.name);
 
   async getUserById(id: string) {
@@ -37,52 +37,69 @@ export class UsersService {
   }
 
   @RabbitSubscribe({
-    exchange: 'default',
-    routingKey: UsersRoutingKey.USER_CREATE,
-    queue: UsersQueue.USER_CREATE,
-    errorBehavior: MessageHandlerErrorBehavior.NACK,
+    exchange: DEFAULT_EXCHANGE_NAME,
+    routingKey: UsersRoutingKey.CREATE,
+    queue: UsersQueue.CREATE,
+    queueOptions: {
+      deadLetterExchange: DEAD_LETTER_EXCHANGE_NAME,
+    },
   })
-  @UsePipes(ValidationPipe)
-  async create({ id, ...data }: CreateUserDto) {
+  @UseInterceptors(DLQRetryCheckerInterceptor(UsersQueue.CREATE))
+  async create({ id, version, version_hash, avatar, username }: CreateUserDto) {
     try {
-      const user = new this.userRepository({ userId: id, ...data });
+      const user = new this.userRepository({ userId: id, username, avatar, versionHash: version_hash });
 
       await user.save();
-      this.logger.log(`Created user with id: ${id}`);
+      this.logger.log(`Created user with id: ${id} and version of ${version}.`);
     } catch (error) {
       this.logger.error(`Unable to create user: ${JSON.stringify(error)}`);
-      new Nack();
+
+      return new Nack();
     }
   }
 
   @RabbitSubscribe({
-    exchange: 'default',
-    routingKey: UsersRoutingKey.USER_UPDATE,
-    queue: UsersQueue.USER_UPDATE,
-    errorBehavior: MessageHandlerErrorBehavior.NACK,
+    exchange: DEFAULT_EXCHANGE_NAME,
+    routingKey: UsersRoutingKey.UPDATE,
+    queue: UsersQueue.UPDATE,
+    queueOptions: {
+      deadLetterExchange: DEAD_LETTER_EXCHANGE_NAME,
+    },
   })
-  async update({ id, ...data }: UpdateUserDto) {
+  @UseInterceptors(DLQRetryCheckerInterceptor(UsersQueue.UPDATE))
+  async update({ id, version, avatar, version_hash, username }: UpdateUserDto) {
     try {
-      const response = await this.userRepository.findOneAndUpdate(
-        { userId: id },
-        data,
-      );
+      const user = await this.userRepository.findOne({
+        userId: id,
+        version: version - 2, // because users service starts with the version of 1
+      });
 
-      if (response) {
-        this.logger.log(`Updated user with id: ${id}`);
+      if (!user) {
+        return new Nack();
       }
+
+      user.avatar = avatar;
+      user.username = username;
+      user.versionHash = version_hash;
+
+      await user.save();
+
+      this.logger.log(`Updated user with id: ${id} and version of ${version}.`);
     } catch (error) {
       this.logger.error(`Unable to update user: ${JSON.stringify(error)}`);
-      new Nack();
+      return new Nack();
     }
   }
 
   @RabbitSubscribe({
-    exchange: 'default',
-    routingKey: UsersRoutingKey.USER_DELETE,
-    queue: UsersQueue.USER_DELETE,
-    errorBehavior: MessageHandlerErrorBehavior.NACK,
+    exchange: DEFAULT_EXCHANGE_NAME,
+    routingKey: UsersRoutingKey.DELETE,
+    queue: UsersQueue.DELETE,
+    queueOptions: {
+      deadLetterExchange: DEAD_LETTER_EXCHANGE_NAME,
+    },
   })
+  @UseInterceptors(DLQRetryCheckerInterceptor(UsersQueue.DELETE))
   async delete({ id }: DeleteUserDto) {
     try {
       const response = await this.userRepository.findOneAndDelete({
@@ -94,7 +111,7 @@ export class UsersService {
       }
     } catch (error) {
       this.logger.error(`Unable to delete user: ${JSON.stringify(error)}`);
-      new Nack();
+      return new Nack();
     }
   }
 }
