@@ -1,8 +1,8 @@
 import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
 import { registerAs } from '@nestjs/config';
 
-export const DEFAULT_EXCHANGE_NAME = 'default'
-export const DEAD_LETTER_EXCHANGE_NAME = 'dlx'
+export const DEFAULT_EXCHANGE_NAME = 'default';
+export const DEAD_LETTER_EXCHANGE_NAME = 'dlx';
 
 export default registerAs('rabbitmq', (): RabbitMQConfig => {
   const {

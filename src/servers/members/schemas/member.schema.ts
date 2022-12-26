@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
+import { createHash } from 'crypto';
 import { HydratedDocument } from 'mongoose';
 import { User } from '../../../users/schemas/user.schema';
 import { Role } from '../../roles/schemas/role.schema';
@@ -53,11 +54,11 @@ export class Member {
   updatedAt: string;
 
   @Exclude()
-  @Prop({ type: Number })
   version: number;
 
   @Exclude()
-  __v: number;
+  @Prop({ type: String, unique: true, trim: true })
+  versionHash: string;
 
   constructor(partial: Partial<Member>) {
     Object.assign(this, partial);
@@ -82,4 +83,22 @@ MemberSchema.virtual('roles', {
   ref: Role.name,
   localField: 'roleIds',
   foreignField: '_id',
+});
+
+MemberSchema.pre('save', function (next) {
+  const { id, userId, serverId, roleIds, version, createdAt, updatedAt } = this;
+  this.versionHash = createHash('sha256')
+    .update(
+      JSON.stringify({
+        id,
+        userId,
+        roleIds,
+        serverId,
+        version,
+        createdAt,
+        updatedAt,
+      }),
+    )
+    .digest('hex');
+  return next();
 });

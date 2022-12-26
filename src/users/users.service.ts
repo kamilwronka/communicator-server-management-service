@@ -1,7 +1,4 @@
-import {
-  Nack,
-  RabbitSubscribe,
-} from '@golevelup/nestjs-rabbitmq';
+import { Nack, RabbitSubscribe } from '@golevelup/nestjs-rabbitmq';
 import {
   Injectable,
   Logger,
@@ -10,7 +7,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { DEAD_LETTER_EXCHANGE_NAME, DEFAULT_EXCHANGE_NAME } from 'src/common/config/rabbitmq.config';
+import {
+  DEAD_LETTER_EXCHANGE_NAME,
+  DEFAULT_EXCHANGE_NAME,
+} from 'src/common/config/rabbitmq.config';
 import { DLQRetryCheckerInterceptor } from 'src/common/interceptors/dlq-retry-checker.interceptor';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
@@ -23,7 +23,7 @@ import { User, UserDocument } from './schemas/user.schema';
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userRepository: Model<UserDocument>,
-  ) { }
+  ) {}
   private readonly logger = new Logger(UsersService.name);
 
   async getUserById(id: string) {
@@ -47,7 +47,12 @@ export class UsersService {
   @UseInterceptors(DLQRetryCheckerInterceptor(UsersQueue.CREATE))
   async create({ id, version, version_hash, avatar, username }: CreateUserDto) {
     try {
-      const user = new this.userRepository({ userId: id, username, avatar, versionHash: version_hash });
+      const user = new this.userRepository({
+        userId: id,
+        username,
+        avatar,
+        versionHash: version_hash,
+      });
 
       await user.save();
       this.logger.log(`Created user with id: ${id} and version of ${version}.`);

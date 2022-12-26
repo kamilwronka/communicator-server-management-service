@@ -3,10 +3,11 @@ import { Exclude, Type } from 'class-transformer';
 import { Document } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../roles/schemas/role.schema';
+import { createHash } from 'crypto';
 
 export type ServerDocument = Server & Document;
 
-@Schema({ timestamps: true, toJSON: { virtuals: true } })
+@Schema({ timestamps: true, toJSON: { virtuals: true }, versionKey: 'version' })
 export class Server {
   @Exclude()
   _id?: string;
@@ -38,7 +39,11 @@ export class Server {
   updatedAt: string;
 
   @Exclude()
-  __v: number;
+  version: number;
+
+  @Exclude()
+  @Prop({ type: String, unique: true, trim: true })
+  versionHash: string;
 
   constructor(partial: Partial<Server>) {
     Object.assign(this, partial);
@@ -46,3 +51,23 @@ export class Server {
 }
 
 export const ServerSchema = SchemaFactory.createForClass(Server);
+
+ServerSchema.pre('save', function (next) {
+  const { id, name, icon, ownerId, members, createdAt, updatedAt, version } =
+    this;
+  this.versionHash = createHash('sha256')
+    .update(
+      JSON.stringify({
+        id,
+        name,
+        icon,
+        ownerId,
+        members,
+        version,
+        createdAt,
+        updatedAt,
+      }),
+    )
+    .digest('hex');
+  return next();
+});
