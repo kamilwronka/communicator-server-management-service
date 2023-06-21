@@ -36,6 +36,7 @@ export const CONFIG_MODULE_CONFIG: ConfigModuleOptions = {
     AWS_ACCESS_KEY_ID: Joi.string(),
     AWS_SECRET_ACCESS_KEY: Joi.string(),
     AWS_S3_BUCKET_NAME: Joi.string(),
+    AWS_REGION: Joi.string(),
   }),
   validationOptions: {
     allowUnknown: true,

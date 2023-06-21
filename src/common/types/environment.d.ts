@@ -11,10 +11,10 @@ declare global {
       MONGODB_ACCESS_PORT: number;
       MONGODB_DATABASE: string;
 
-      CLOUDFLARE_ACCOUNT_ID: string;
-      CLOUDFLARE_ACCESS_KEY_ID: string;
-      CLOUDFLARE_SECRET_ACCESS_KEY: string;
-      CLOUDFLARE_R2_BUCKET_NAME: string;
+      AWS_REGION: string;
+      AWS_S3_BUCKET_NAME: string;
+      AWS_ACCESS_KEY_ID: string;
+      AWS_SECRET_ACCESS_KEY: string;
 
       LIVEKIT_API_KEY: string;
       LIVEKIT_API_SECRET: string;

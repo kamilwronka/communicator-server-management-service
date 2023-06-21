@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  servers:
+    container_name: servers
+    build:
+      dockerfile: ./Dockerfile.dev
+      context: .
+    volumes:
+      - './:/usr/src/app'
+    networks:
+      - dev
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.servers.rule=Host(`localhost`) && PathPrefix(`/servers`)'
+      - 'traefik.http.routers.servers.entrypoints=web'
+      - 'traefik.http.middlewares.servers-stripprefix.stripprefix.prefixes=/servers'
+      - 'traefik.http.routers.servers.middlewares=servers-stripprefix'
+
+networks:
+  dev:
+    external: true

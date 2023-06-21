@@ -74,6 +74,8 @@ spec:
                 secretKeyRef:
                   name: aws
                   key: aws-s3-bucket-name
+            - name: AWS_REGION
+              value: eu-central-1
 
           livenessProbe:
             httpGet:
