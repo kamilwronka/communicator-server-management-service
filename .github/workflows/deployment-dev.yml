@@ -13,7 +13,6 @@ env:
   ENVIRONMENT: dev
   NAMESPACE: communicator-dev
   KUBECONFIG: /home/deploy/config
-  GCP_CREDENTIALS: ${{ secrets.GKE_SA_KEY }}
 
 jobs:
   setup-build-publish-deploy:
